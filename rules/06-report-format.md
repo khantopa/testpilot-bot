@@ -10,7 +10,7 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 # TestPilotBot Verification Report
 
 **Generated**: <ISO timestamp>
-**Jira Ticket**: [<TICKET_ID>](<jira_url>)
+**Jira Ticket**: [<TICKET_ID>](jira_url)
 **Feature**: <feature name from Jira summary>
 **Test Environment**: <TEST_ENV_URL>
 **Figma Reference**: <FIGMA_URL>
@@ -21,13 +21,13 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 
 ## Summary
 
-| Category | Total | Pass | Fail | Inconclusive |
-|----------|-------|------|------|-------------|
-| Visual | X | X | X | X |
-| Business Logic | X | X | X | X |
-| Responsiveness | X | X | X | X |
-| Regression | X | X | X | X |
-| **TOTAL** | **X** | **X** | **X** | **X** |
+| Category       | Total | Pass  | Fail  | Inconclusive |
+| -------------- | ----- | ----- | ----- | ------------ |
+| Visual         | X     | X     | X     | X            |
+| Business Logic | X     | X     | X     | X            |
+| Responsiveness | X     | X     | X     | X            |
+| Regression     | X     | X     | X     | X            |
+| **TOTAL**      | **X** | **X** | **X** | **X**        |
 
 **Overall Verdict**: ✅ PASS / ❌ FAIL / ⚠️ PARTIAL
 
@@ -39,9 +39,9 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 
 ## Test Users Created
 
-| Email | Nickname | Type | Gender | Approved | Purpose |
-|-------|----------|------|--------|----------|---------|
-| testpilot_<ts>@seeking-test.com | testpilot_<ts> | Attractive | Man | ✅ Yes | AC #1, #2, Visual |
+| Email                            | Nickname        | Type       | Gender | Approved | Purpose           |
+| -------------------------------- | --------------- | ---------- | ------ | -------- | ----------------- |
+| testpilot\_<ts>@seeking-test.com | testpilot\_<ts> | Attractive | Man    | ✅ Yes   | AC #1, #2, Visual |
 
 > Note: Delete test users after verification. These accounts are safe to remove.
 
@@ -50,6 +50,7 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 ## Visual Verification Results
 
 ### 1. <Check Name>
+
 - **Element**: `<selector or description>`
 - **Page/State**: <URL or app state>
 - **Category**: Visual
@@ -59,8 +60,8 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 - **Actual (Browser)**: `font-size: 16px; color: #1A1A1A; padding: 16px 20px`
 - **Discrepancy**: `padding-right: 24px (Figma) vs 20px (browser)`
 - **Evidence**:
-  - Figma screenshot: `reports/screenshots/<ts>-button-figma.png`
-  - Browser screenshot: `reports/screenshots/<ts>-button-browser.png`
+  - Figma screenshot: `screenshots/<ticket-id>/<ts>-button-figma.png`
+  - Browser screenshot: `screenshots/<ticket-id>/<ts>-button-browser.png`
 - **Notes**: Padding is 4px short on the right side only.
 
 ---
@@ -68,6 +69,7 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 ## Business Logic Results
 
 ### 1. AC #<N>: <AC Summary>
+
 - **AC Statement**: "<full AC text from Jira>"
 - **Category**: Business Logic
 - **Status**: ✅ PASS / ❌ FAIL / ⚠️ INCONCLUSIVE
@@ -77,7 +79,7 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 - **Expected Outcome**: <what AC says should happen>
 - **Actual Outcome**: <what was observed>
 - **Evidence**:
-  - Screenshot: `reports/screenshots/<ts>-ac1-result.png`
+  - Screenshot: `screenshots/<ticket-id>/<ts>-ac1-result.png`
   - Network: `POST /api/v2/endpoint → 200 OK { "success": true }`
   - DOM state: `element[data-testid="confirmation"] visible, text: "Success"`
 - **Notes**: <any context>
@@ -87,6 +89,7 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 ## Responsiveness Results
 
 ### Breakpoint: 375px (Mobile S)
+
 - **Status**: ✅ PASS / ❌ FAIL
 - **Confidence**: HIGH
 - **Observations**:
@@ -95,12 +98,14 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
   - Font sizes ≥ 12px
 - **Issues**:
   - (none) / <describe issue>
-- **Evidence**: `reports/screenshots/<ts>-375px.png`
+- **Evidence**: `screenshots/<ticket-id>/<ts>-375px.png`
 
 ### Breakpoint: 768px (Tablet)
+
 ...
 
 ### Breakpoint: 1280px (Desktop)
+
 ...
 
 ---
@@ -108,11 +113,12 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 ## Regression Check Results
 
 ### <Adjacent Feature Name>
+
 - **Status**: ✅ No regression / ❌ REGRESSION DETECTED
 - **URL**: <url tested>
 - **Action**: <what was done>
 - **Observation**: <what was seen>
-- **Evidence**: `reports/screenshots/<ts>-regression-<feature>.png`
+- **Evidence**: `screenshots/<ticket-id>/<ts>-regression-<feature>.png`
 
 ---
 
@@ -121,12 +127,15 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 > Consolidated list of all failures. Prioritised by severity.
 
 ### Critical (blocks release)
+
 - [ ] **<Short description>** — AC #X fails: <expected> vs <actual>. Evidence: <link>
 
 ### Major (significant impact)
+
 - [ ] **<Short description>** — Visual: <property> is wrong. Expected <X>, got <Y>.
 
 ### Minor (polish / low impact)
+
 - [ ] **<Short description>** — <description>
 
 ---
@@ -135,9 +144,9 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 
 > Items where AC, Figma, and/or business rules contradict each other.
 
-| # | Conflict | AC Says | Business Rule Says | Figma Says | Recommendation |
-|---|---------|---------|-------------------|------------|---------------|
-| 1 | <topic> | <AC text> | <rule text> | <design> | Clarify with reporter |
+| #   | Conflict | AC Says   | Business Rule Says | Figma Says | Recommendation        |
+| --- | -------- | --------- | ------------------ | ---------- | --------------------- |
+| 1   | <topic>  | <AC text> | <rule text>        | <design>   | Clarify with reporter |
 
 ---
 
@@ -145,9 +154,9 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 
 > Checks that could not be completed due to setup failure, missing spec, or ambiguous AC.
 
-| # | Check | Reason | What Would Be Needed |
-|---|-------|--------|---------------------|
-| 1 | AC #3 | Precondition failed — user setup failed at Step 3.12 | Working photo upload in test env |
+| #   | Check | Reason                                               | What Would Be Needed             |
+| --- | ----- | ---------------------------------------------------- | -------------------------------- |
+| 1   | AC #3 | Precondition failed — user setup failed at Step 3.12 | Working photo upload in test env |
 
 ---
 
@@ -160,13 +169,13 @@ Save to: `reports/verification-report-<TICKET_ID>-<timestamp>.md`
 
 ## Sign-off
 
-| Item | Status |
-|------|--------|
+| Item                    | Status  |
+| ----------------------- | ------- |
 | All AC checks attempted | ✅ / ❌ |
-| Visual checks complete | ✅ / ❌ |
-| Responsiveness checked | ✅ / ❌ |
-| Regression scan done | ✅ / ❌ |
-| Test users documented | ✅ |
+| Visual checks complete  | ✅ / ❌ |
+| Responsiveness checked  | ✅ / ❌ |
+| Regression scan done    | ✅ / ❌ |
+| Test users documented   | ✅      |
 ```
 
 ---
@@ -207,6 +216,7 @@ IF > 30% of checks are INCONCLUSIVE due to setup failure:
 ## After Saving the Report
 
 Say to the user:
+
 ```
 ✅ Verification report saved: reports/verification-report-<TICKET_ID>-<timestamp>.md
 

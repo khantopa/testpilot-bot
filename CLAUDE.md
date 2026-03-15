@@ -47,6 +47,7 @@ These rules override everything else — if a rule file contradicts a standing r
 - **Visual verification optional**: CSS comparison (Stage 4) is optional. Only run visual verification if the user explicitly requests it or the test plan includes visual checks. For re-runs of previously verified modals, skip visual verification entirely — only re-run business logic. Record `visual_verified_date` in pattern known instances when visual passes.
 - **UID extraction**: Get user UID from `window.VWOObj.uuid` via `browser_evaluate`. Do NOT call `GET /api/v3/me` — it wastes a network request. `window.VWOObj.uuid` is available on any authenticated page.
 - **force_verify_email bypass**: After registration, FE may set `force_verify_email` in localStorage that blocks modal display. Clear it before checking modals: `await browser_evaluate("localStorage.removeItem('force_verify_email')")`. This is a known test condition — the guard is legitimate in production but blocks verification.
+- **Screenshots**: Save ALL screenshots to `screenshots/<ticket-id>/` directory. NEVER save screenshots in the root directory. Create the ticket directory if it doesn't exist.
 
 ## Workflow Overview
 

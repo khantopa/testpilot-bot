@@ -168,8 +168,8 @@ For every visual check, capture:
 2. **Browser screenshot** — full element screenshot
 3. **Overlay/comparison** — if tooling allows, side-by-side
 
-Save screenshots to: `reports/screenshots/<timestamp>-<element-name>-figma.png`
-and `reports/screenshots/<timestamp>-<element-name>-browser.png`
+Save screenshots to: `screenshots/<ticket-id>/<timestamp>-<element-name>-figma.png`
+and `screenshots/<ticket-id>/<timestamp>-<element-name>-browser.png`
 
 Reference both in the verification report.
 
