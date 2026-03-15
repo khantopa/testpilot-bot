@@ -42,6 +42,7 @@ These rules override everything else — if a rule file contradicts a standing r
 - **IPCF fast-path**: For onboarding fields where any valid value works (not test-specific), if a default value is already selected, click Continue immediately. Do NOT re-select or verify the value.
 - **OTP entry**: Always paste "000000" as a single action. Never type digits individually. This applies to registration, login, and all OTP flows.
 - **Standing accounts**: Before creating new users, check `memory/standing-accounts.json` for reusable accounts. Skip full registration when a standing account matches the test scenario.
+- **Campaign cookie default**: Campaign scenarios ALWAYS use the full cookie payload with these fields: submission_uid, sex, gender_preference, email, dob, source. For BUC 2026, source is absent/undefined. For future campaigns (e.g. Revolve), source should be the campaign name (e.g. "revolve"). For Generous users: sex="3", gender_preference=female. For Attractive users: sex="4", gender_preference=male. Only use minimal (submission_uid only) if user explicitly says "minimal" or "enrollment only".
 
 ## Workflow Overview
 

@@ -33,18 +33,30 @@ Use this for testing modals and enrollment logic where form pre-population is no
 
 ### Full (enrollment + join form auto-population — Req.4 / AC: form pre-fill from cookie)
 
+**Default: Generous (Male) User**
 ```js
 const payload = btoa(JSON.stringify({
   submission_uid: crypto.randomUUID(),   // MUST be real UUID
-  sex: "3",                              // "3" = Male, "4" = Female (API attribute ID)
-  gender_preference: ["248", "249"],     // Array of API preference IDs (or legacy comma-string)
-  email: "testpilot_<timestamp>@seeking-test.com",
-  dob: 631152000,                        // Unix timestamp (seconds) — preferred format
-  // OR use separate fields instead of dob:
-  // bdayDay: "15",
-  // bdayMonth: "03",
-  // bdayYear: "1990",
-  account_type: "1"                      // "1" = auto-set for Male/Attractive (optional — FE derives from sex)
+  sex: "3",                              // Male
+  gender_preference: ["248"],            // Female preference ID
+  email: `khan+gen${Date.now()}@incube8.sg`,
+  dob: 631152000,                        // Unix timestamp (seconds)
+  account_type: "1",
+  source: undefined                      // BUC 2026 — no source. Future: "revolve", etc.
+}));
+document.cookie = `_join_inputValues=${payload}; domain=.members-testqa.seeking.com; path=/`;
+```
+
+**Default: Attractive (Female) User**
+```js
+const payload = btoa(JSON.stringify({
+  submission_uid: crypto.randomUUID(),   // MUST be real UUID
+  sex: "4",                              // Female
+  gender_preference: ["247"],            // Male preference ID
+  email: `khan+attr${Date.now()}@incube8.sg`,
+  dob: 631152000,                        // Unix timestamp (seconds)
+  account_type: "2",
+  source: undefined                      // BUC 2026 — no source. Future: "revolve", etc.
 }));
 document.cookie = `_join_inputValues=${payload}; domain=.members-testqa.seeking.com; path=/`;
 ```
@@ -64,6 +76,7 @@ document.cookie = `_join_inputValues=${payload}; domain=.members-testqa.seeking.
 | `bdayMonth` | string | `"1"`–`"12"` | Fallback if `dob` absent |
 | `bdayYear` | string | 4-digit year | Fallback if `dob` absent |
 | `account_type` | string | `"1"`, `"2"` | Auto-derived from `sex` if omitted |
+| `source` | string or undefined | Campaign name e.g. `"revolve"` | Absent for BUC 2026. Future campaigns should include campaign name. |
 
 **BUC 2026**: Only `submission_uid` is required for enrollment. Other fields enable form pre-population per Req.4.
 

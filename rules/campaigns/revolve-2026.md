@@ -24,6 +24,21 @@ document.cookie = `revolve_ref=revolve.com; domain=.${cookieDomain}; path=/; Sam
 document.cookie = `campaign_source=revolve; domain=.${cookieDomain}; path=/; SameSite=Lax`;
 ```
 
+Also set the `_join_inputValues` cookie with `source: "revolve"` included:
+
+```javascript
+const payload = btoa(JSON.stringify({
+  submission_uid: crypto.randomUUID(),
+  sex: "3",                    // or "4" depending on test user type
+  gender_preference: ["248"],  // adjust per user type
+  email: `khan+revolve${Date.now()}@incube8.sg`,
+  dob: 631152000,
+  account_type: "1",
+  source: "revolve"            // Revolve campaign name — always include for this campaign
+}));
+document.cookie = `_join_inputValues=${payload}; domain=.${cookieDomain}; path=/`;
+```
+
 > **Note**: Exact cookie names and values must be verified against the Revolve integration Jira tickets or the CF Worker configuration. Update this file if cookie names change.
 
 **Verify cookies are set:**
