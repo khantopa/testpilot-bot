@@ -20,7 +20,9 @@
       "mcp__playwright__browser_fill_form",
       "mcp__playwright__browser_file_upload",
       "mcp__playwright__browser_resize",
-      "mcp__playwright__browser_close"
+      "mcp__playwright__browser_close",
+      "mcp__claude_ai_Figma__get_design_context",
+      "mcp__claude_ai_Figma__get_metadata"
     ]
   }
 }
