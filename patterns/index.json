@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "description": "TestPilotBot verification pattern registry. Patterns are matched before Stage 1 to route known feature types to optimised verification protocols.",
+    "last_updated": "2026-03-15",
+    "total_patterns": 0,
+    "scoring": {
+      "keyword_match": 2,
+      "condition_match": 3,
+      "minimum_total_to_match": 4,
+      "keywords_mandatory": true
+    }
+  },
+  "patterns": []
+}

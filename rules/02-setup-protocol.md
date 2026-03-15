@@ -1,0 +1,442 @@
+# Stage 3: Test Data Setup Protocol
+
+This stage creates test users through the actual UI flow and brings them to the state required for testing.
+
+**Never create users directly via API or database.** The registration flow itself is part of what we're testing. Use the UI.
+
+---
+
+## Pre-Setup: Campaign Cookie Injection (if applicable)
+
+If the test plan identified a campaign (see Stage 1), inject campaign cookies BEFORE navigating to /join:
+
+```
+FOR EACH cookie in rules/campaigns/<campaign>.md:
+  document.cookie = "<name>=<value>; domain=.<domain>; path=/"
+```
+
+Verify cookies are set before proceeding. If cookie injection fails:
+- Note the failure in the report
+- Ask the user: "Campaign cookies could not be set. Continue without them or abort?"
+
+---
+
+## 3.1 — Navigate to Registration
+
+1. Open test environment: `<TEST_ENV_URL>/join`
+2. Verify the join page loaded:
+   - Page title contains "Join" or "Sign up"
+   - Gender selection visible
+   - If page doesn't load within 10 seconds → **ENVIRONMENT FAILURE** (see 3.0 Environment Check)
+
+---
+
+## 3.2 — Gender & Account Type Selection
+
+**Default values (override per test plan if needed):**
+- Gender: **Man**
+- Interest: **Women** (or as required by test scenario)
+- Account Type: **Attractive** (or as required — check test plan)
+
+Steps:
+1. Click gender button matching the target gender
+2. Click interest button (Women / Men / Both)
+3. Click account type (Attractive / Successful)
+4. Verify the "Next" or "Continue" button becomes enabled
+5. Click Continue
+
+**Error: Button doesn't enable**
+```
+IF Continue still disabled after selections:
+  → Take screenshot
+  → Check browser console for JS errors
+  → Report: "SETUP FAILURE — Registration step 1: Continue button did not enable after gender/account type selection"
+  → Abort this user setup attempt
+```
+
+---
+
+## 3.3 — Age Verification
+
+Generate a valid date of birth making the user exactly **25 years old**:
+```
+DOB = today's date - 25 years
+Example: If today is 2026-03-15 → DOB = 2001-03-15
+```
+
+Steps:
+1. Select birth month from dropdown/date picker
+2. Select birth day
+3. Select birth year
+4. Verify no age validation error appears
+5. Click Continue
+
+**Error: Age validation fails**
+```
+IF "You must be at least X years old" error appears:
+  → Recalculate DOB — ensure user is at least 25 (use 30 years as fallback)
+  → Retry with adjusted DOB
+IF error persists:
+  → Screenshot + report as SETUP FAILURE
+```
+
+---
+
+## 3.4 — Email Registration
+
+Generate a unique test email:
+```
+Format: testpilot_<timestamp>@seeking-test.com
+Example: testpilot_20260315143022@seeking-test.com
+```
+
+Steps:
+1. Enter the generated email in the email field
+2. Verify email format validation passes (no error shown)
+3. Click "Send Code" or equivalent CTA
+4. Wait for OTP input to appear (up to 5 seconds)
+
+**Error: Email field validation fails**
+```
+IF "Please enter a valid email address" appears:
+  → Verify email format — check for typos in template
+  → Try alternative format: testpilot+<timestamp>@gmail.com
+```
+
+**Error: OTP input doesn't appear**
+```
+IF OTP input not visible after 10 seconds:
+  → Check if rate limiting triggered ("Are you a robot?" page)
+  → If rate limited: wait 5 minutes and retry with a different email
+  → If page unresponsive: screenshot + ENVIRONMENT FAILURE
+```
+
+---
+
+## 3.5 — OTP Entry
+
+The test environment uses **mock OTP: 000000**
+
+Steps:
+1. Enter `000000` in the OTP field(s)
+2. Click Verify or Submit
+3. Verify navigation to IPCF Step 1 (Nickname)
+
+**Error: OTP rejected**
+```
+IF "Please enter the correct code." error appears:
+  → Verify Zeus config 'Email OTP Test Code' is enabled in this test environment
+  → Ask the user: "OTP 000000 was rejected. Is the test OTP toggle enabled in Zeus for <TEST_ENV>?"
+  → Do NOT retry more than 3 times — OTP throttle triggers at 4 failures
+```
+
+**Error: OTP expired**
+```
+IF OTP expiry message appears (OTP expires after 2 minutes):
+  → Click "Resend code"
+  → Re-enter 000000 immediately
+```
+
+---
+
+## 3.6 — IPCF Step 1: Nickname
+
+Generate a unique nickname:
+```
+Format: testpilot_<timestamp>
+Example: testpilot_20260315143022
+```
+
+Steps:
+1. Clear any pre-filled nickname
+2. Enter the generated nickname
+3. Wait for real-time uniqueness check (up to 3 seconds)
+4. Verify no "That username is already taken" error
+5. Verify Continue button enables
+6. Click Continue
+
+**Error: Nickname taken**
+```
+IF "Oops! That username is already taken":
+  → Append random 4-digit suffix: testpilot_<timestamp>_<random>
+  → Retry immediately
+```
+
+---
+
+## 3.7 — IPCF Step 2: Location
+
+Steps:
+1. Click the location input
+2. Type a city name: **"Sydney"** (or any valid city)
+3. Wait for autocomplete dropdown
+4. Select the first result
+5. Verify location is accepted (no error, Continue enables)
+6. Click Continue
+
+**Error: No autocomplete results**
+```
+IF dropdown doesn't appear after typing "Sydney":
+  → Try "New York" or "London"
+  → If still no results: screenshot + report as SETUP FAILURE (location service may be down)
+```
+
+---
+
+## 3.8 — IPCF Step 3: Physical Attributes
+
+Height:
+1. Open height dropdown
+2. Select any valid option (e.g., first item in list)
+3. Verify selection registers
+
+Weight:
+1. Open weight dropdown
+2. Select any valid option (e.g., first item in list)
+3. Verify selection registers
+
+4. Verify Continue enables
+5. Click Continue
+
+**Error: Dropdown options don't load**
+```
+IF dropdown is empty or spinner persists > 5 seconds:
+  → Refresh the page — IPCF should remember progress
+  → If still empty: screenshot + SETUP FAILURE
+```
+
+---
+
+## 3.9 — IPCF Step 4: Personal Details
+
+Fill all fields with default values:
+- **Ethnicity**: Select first available option
+- **Education**: Select first available option
+- **Relationship**: Select **"Single"** (required)
+- **Children**: Select first available option
+- **Smoking**: Select first available option
+- **Drinking**: Select first available option
+
+Steps:
+1. For each field: click → select value → verify selection registered
+2. After all fields filled: verify Continue enables
+3. Click Continue
+
+**Error: Relationship field not present**
+```
+IF relationship dropdown not found:
+  → Check if this step is split across multiple sub-pages
+  → Scroll down to check for hidden fields
+  → Screenshot + note in report if field genuinely absent
+```
+
+---
+
+## 3.10 — IPCF Step 5: Tags
+
+Steps:
+1. Wait for tag options to load
+2. Click any **1** tag to select it (minimum required)
+3. Verify tag appears selected (visual state change)
+4. Verify Continue enables
+5. Click Continue
+
+**Error: Tags don't load**
+```
+IF tag area is blank or shows spinner > 5 seconds:
+  → Refresh page
+  → If tags still absent: screenshot + SETUP FAILURE
+```
+
+---
+
+## 3.11 — IPCF Step 6: Looking For (Skippable)
+
+Steps:
+1. Check if "Skip" link is visible
+2. If visible: click Skip → proceed to Step 7
+3. If not visible (required field):
+   - Enter placeholder text (at least 50 chars):
+     `"TestPilot verification account placeholder text for looking for section."`
+   - Verify character count shows ≥ 50
+   - Click Continue
+
+---
+
+## 3.12 — IPCF Step 7: Photo Upload
+
+Upload the test photo from `testdata/profile-photo-test.jpg`
+
+Steps:
+1. Locate the photo upload element (input[type="file"] or drag-drop zone)
+2. Upload `testdata/profile-photo-test.jpg`
+3. Wait for upload confirmation (up to 30 seconds for processing)
+4. Verify at least 1 photo appears in the profile
+5. Look for any error messages (rejected for content, format error, size error)
+6. If photo editor appears (crop/rotate): accept defaults, confirm
+7. Click Continue or Next
+
+**Error: Upload rejected**
+```
+IF "Photo rejected" or content moderation error:
+  → The test photo may have triggered moderation
+  → Try a plain solid-color image if available in testdata/
+  → Report: "Test photo upload triggered content moderation — consider updating testdata/"
+```
+
+**Error: Upload timeout**
+```
+IF no confirmation after 30 seconds:
+  → Check network tab for failed requests
+  → Retry upload once
+  → If still fails: SETUP FAILURE — photo upload service may be down
+```
+
+---
+
+## 3.13 — IPCF Step 8: Profile Content
+
+Heading:
+1. Enter: `"TestPilot Verification Account"` (30 chars — meets 4-50 char requirement)
+2. Verify character counter updates
+3. Verify no validation error
+
+About Me:
+1. Enter: `"This is a TestPilotBot automated verification account created for QA testing purposes. This account is safe to delete after verification is complete."` (≥ 50 chars)
+2. Verify character counter shows ≥ 50
+3. Verify no validation error
+
+4. Click Continue
+
+**Error: Heading validation fails**
+```
+IF red border or error on heading field:
+  → Check character count — must be 4-50 chars
+  → Current string "TestPilot Verification Account" is 30 chars — should be valid
+  → If invalid: check if content was rejected (profanity filter?)
+  → Try: "QA Test Profile Account"
+```
+
+**Error: About Me validation fails**
+```
+IF "You are missing your description." error or red border:
+  → Count characters in the entered text
+  → Must be ≥ 50 chars
+  → Verify text was fully entered (no clipboard truncation)
+```
+
+---
+
+## 3.14 — IPCF Step 9: Selfie Verification (Skip)
+
+Steps:
+1. Look for "Skip" link
+2. If visible: click Skip → proceed
+3. If not visible (required):
+   - Note in report: "Selfie verification required — manual step needed"
+   - Ask user: "Selfie verification is required but not skippable on this test env. How should we proceed?"
+
+---
+
+## 3.15 — Confirm IPCF Completion
+
+After the last IPCF step, verify:
+- Redirected to dashboard, PAS queue, or profile pending page
+- URL is NOT stuck at an IPCF step
+- No error messages visible
+
+Record:
+```
+Test User Created:
+- Email: testpilot_<timestamp>@seeking-test.com
+- Nickname: testpilot_<timestamp>
+- Type: <Attractive / Successful>
+- Gender: <Man / Woman>
+- IPCF Status: Complete
+- PAS Status: Pending approval
+```
+
+---
+
+## 3.16 — Admin Approval
+
+Navigate to admin panel: `<TEST_ENV_URL>/login` (or known admin URL)
+
+Admin Login:
+1. Enter admin credentials (from environment config or ask user if not known)
+2. Click Login / Submit
+3. Verify admin dashboard loaded
+
+**Error: Admin login fails**
+```
+IF "Invalid credentials" or redirect loop:
+  → Ask user: "Admin login failed. Can you provide the correct admin credentials for <TEST_ENV>?"
+  → Do NOT retry more than 2 times
+```
+
+Search for test user:
+1. Navigate to user search / new profile moderation queue
+2. Search by email: `testpilot_<timestamp>@seeking-test.com`
+3. Locate the profile in results
+
+Approve profile:
+1. Open the user's profile in admin
+2. Look for Approve button (individual) or checkbox + "Submit Decision for all Above" (bulk)
+3. Click Approve
+4. Verify profile status changes to "Approved"
+
+**Error: User not found in admin**
+```
+IF search returns no results:
+  → Verify IPCF completion was successful (Step 3.15)
+  → Check if at least 1 photo was uploaded (required for PAS queue)
+  → Wait 30 seconds and search again (brief propagation delay is normal)
+  → If still not found after 60 seconds: report as SETUP FAILURE
+```
+
+---
+
+## 3.17 — Return to Test Environment as Approved User
+
+1. Navigate back to test environment: `<TEST_ENV_URL>`
+2. Log in as the test user (using email + OTP flow)
+3. Enter OTP `000000`
+4. Verify:
+   - User lands on dashboard (not IPCF, not pending screen)
+   - Profile shows "Approved" state
+   - Feature under test is accessible
+
+**Error: User still sees "Pending" screen after approval**
+```
+IF approval screen still showing:
+  → Hard refresh the page (Cmd+Shift+R or Ctrl+Shift+R)
+  → If still pending: check admin — was approval saved correctly?
+  → Re-do approval step if needed
+```
+
+---
+
+## 3.18 — Record Test User Inventory
+
+After each successful setup, record to report:
+
+```markdown
+## Test Users Created
+| Email | Nickname | Type | Approved | Purpose |
+|-------|----------|------|----------|---------|
+| testpilot_<ts>@seeking-test.com | testpilot_<ts> | Attractive | Yes | AC #1, #2, #3 |
+```
+
+This table appears in the final verification report for cleanup tracking.
+
+---
+
+## Setup Failure Protocol
+
+If any step fails and cannot be recovered:
+
+1. Record exactly which step failed and what was observed
+2. Take a screenshot
+3. Add `SETUP FAILURE` entry to the report
+4. Ask user: "Setup failed at step <N>. Options: (A) Retry from the beginning, (B) Skip this user type and note as untested, (C) Abort verification"
+5. Do NOT attempt to verify features that require this user type — mark those checks as `INCONCLUSIVE — Setup failure`

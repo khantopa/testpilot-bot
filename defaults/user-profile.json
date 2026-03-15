@@ -1,0 +1,33 @@
+{
+  "_description": "Default values for test user creation via IPCF onboarding flow. Override per-test in test plan when specific values are required.",
+  "registration": {
+    "gender": "Man",
+    "interest": "Women",
+    "account_type": "Attractive",
+    "age_years": 25,
+    "otp": "000000"
+  },
+  "ipcf": {
+    "nickname_prefix": "testpilot_",
+    "location": "Sydney",
+    "height": "first_option",
+    "weight": "first_option",
+    "ethnicity": "first_option",
+    "education": "first_option",
+    "relationship": "Single",
+    "children": "first_option",
+    "smoking": "first_option",
+    "drinking": "first_option",
+    "tags_count": 1,
+    "looking_for": "skip_if_possible",
+    "looking_for_placeholder": "TestPilot verification account placeholder text for looking for section that meets the minimum character requirement.",
+    "photo": "testdata/profile-photo-test.jpg",
+    "heading": "TestPilot Verification Account",
+    "about_me": "This is a TestPilotBot automated verification account created for QA testing purposes. This account is safe to delete after verification is complete.",
+    "selfie": "skip"
+  },
+  "email": {
+    "format": "testpilot_{timestamp}@seeking-test.com",
+    "alternative_format": "testpilot+{timestamp}@gmail.com"
+  }
+}
