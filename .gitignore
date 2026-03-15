@@ -12,3 +12,6 @@ screenshots/
 
 # macOS
 .DS_Store
+
+# Playwright MCP (local cache)
+.playwright-mcp/

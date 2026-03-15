@@ -1,9 +1,0 @@
-[     274ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-testqa.seeking.com/logout:0
-[    1187ms] Identifier 'midaEventObserver' has already been declared
-[    1779ms] Unexpected identifier 'is'
-[    1798ms] [ERROR] Not signed in with the identity provider. @ https://members-testqa.seeking.com/login?fromLogout=1:0
-[    1836ms] [WARNING] [GSI_LOGGER]: google.accounts.id.initialize() is called multiple times. This could cause unexpected behavior and only the last initialized instance will be used. @ https://accounts.google.com/gsi/client:80
-[    1909ms] [WARNING] [GSI_LOGGER]: google.accounts.id.initialize() is called multiple times. This could cause unexpected behavior and only the last initialized instance will be used. @ https://accounts.google.com/gsi/client:80
-[    1919ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-testqa.seeking.com/login?fromLogout=1:0
-[    1947ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://accounts.google.com/gsi/client:81
-[    2678ms] Identifier 'midaEventObserver' has already been declared

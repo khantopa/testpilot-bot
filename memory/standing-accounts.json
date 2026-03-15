@@ -5,7 +5,7 @@
       "type": "Generous",
       "gender": "Man",
       "status": "approved",
-      "environment": "testqa",
+      "environment": "all_environments",
       "purpose": "Existing approved member — use for not_eligible, existing user scenarios",
       "otp": "000000"
     }

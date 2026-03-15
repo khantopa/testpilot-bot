@@ -1,4 +1,0 @@
-[     224ms] Unexpected identifier 'is'
-[     338ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-testqa.seeking.com/join:0
-[    1138ms] Identifier 'midaEventObserver' has already been declared
-[   31180ms] [WARNING] The specified value "1999-03-15" cannot be parsed, or is out of range. @ https://members-testqa.seeking.com/vendors-f1a36b0780b7adbb75c5.min.js?f1a36b0780b7adbb75c5:2905
