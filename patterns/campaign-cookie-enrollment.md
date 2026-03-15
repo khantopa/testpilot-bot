@@ -26,7 +26,7 @@
 const payload = btoa(JSON.stringify({
   submission_uid: crypto.randomUUID()  // MUST be real UUID — Str::isUuid() validated in BE
 }));
-document.cookie = `_join_inputValues=${payload}; domain=.members-testqa.seeking.com; path=/`;
+document.cookie = `_join_inputValues=${payload}; domain=.seeking.com; path=/`;
 ```
 
 Use this for testing modals and enrollment logic where form pre-population is not the AC under test.
@@ -44,7 +44,7 @@ const payload = btoa(JSON.stringify({
   account_type: "1",
   source: undefined                      // BUC 2026 — no source. Future: "revolve", etc.
 }));
-document.cookie = `_join_inputValues=${payload}; domain=.members-testqa.seeking.com; path=/`;
+document.cookie = `_join_inputValues=${payload}; domain=.seeking.com; path=/`;
 ```
 
 **Default: Attractive (Female) User**
@@ -58,7 +58,7 @@ const payload = btoa(JSON.stringify({
   account_type: "2",
   source: undefined                      // BUC 2026 — no source. Future: "revolve", etc.
 }));
-document.cookie = `_join_inputValues=${payload}; domain=.members-testqa.seeking.com; path=/`;
+document.cookie = `_join_inputValues=${payload}; domain=.seeking.com; path=/`;
 ```
 
 **Source**: `FE_REPO/resources/react-app/components/auth/utils.tsx` lines 276–417 (`validateBUCCookie`)
@@ -92,6 +92,18 @@ document.cookie = `_join_inputValues=${payload}; domain=.members-testqa.seeking.
 1. Navigate to any page on the domain (e.g. /login)
 2. Set cookie via browser_evaluate
 3. Navigate to /join (first visit with cookie present)
+```
+
+**Domain extraction** — always use the root domain, not the subdomain:
+
+```js
+// Extract root domain from test env URL
+// https://members-testqa.seeking.com → .seeking.com
+// https://members-test13.seeking.com → .seeking.com
+const url = new URL(TEST_ENV_URL);
+const parts = url.hostname.split('.');
+const rootDomain = '.' + parts.slice(-2).join('.');
+// rootDomain = ".seeking.com"
 ```
 
 Cookie is **removed by FE** after successful parsing on Join page load (`removeCookie('_join_inputValues', 1, 's')` — `Join.tsx` line 219). This is expected.

@@ -43,6 +43,7 @@ These rules override everything else — if a rule file contradicts a standing r
 - **OTP entry**: Always paste "000000" as a single action. Never type digits individually. This applies to registration, login, and all OTP flows.
 - **Standing accounts**: Before creating new users, check `memory/standing-accounts.json` for reusable accounts. Skip full registration when a standing account matches the test scenario.
 - **Campaign cookie default**: Campaign scenarios ALWAYS use the full cookie payload with these fields: submission_uid, sex, gender_preference, email, dob, source. For BUC 2026, source is absent/undefined. For future campaigns (e.g. Revolve), source should be the campaign name (e.g. "revolve"). For Generous users: sex="3", gender_preference=female. For Attractive users: sex="4", gender_preference=male. Only use minimal (submission_uid only) if user explicitly says "minimal" or "enrollment only".
+- **Campaign cookie domain**: ALWAYS set campaign cookies on the root domain (e.g. `.seeking.com`), NOT the subdomain (e.g. `.members-testqa.seeking.com`). Extract root domain from TEST_ENV_URL: `const parts = new URL(TEST_ENV_URL).hostname.split('.'); const rootDomain = '.' + parts.slice(-2).join('.');` — e.g. `https://members-testqa.seeking.com` → `.seeking.com`. This matches production CF Worker behavior where cookies are set on the root domain to be accessible across all subdomains.
 
 ## Workflow Overview
 

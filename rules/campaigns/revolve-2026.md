@@ -17,11 +17,13 @@ BEFORE navigating to /join, inject the following cookies in the test environment
 // Revolve campaign entry cookies (set by CF Worker in production)
 // These must be set BEFORE the join flow to simulate campaign entry
 
-const cookieDomain = new URL(TEST_ENV_URL).hostname;
+const parts = new URL(TEST_ENV_URL).hostname.split('.');
+const cookieDomain = '.' + parts.slice(-2).join('.');
+// e.g. https://members-testqa.seeking.com → .seeking.com
 
-document.cookie = `revolve_campaign=1; domain=.${cookieDomain}; path=/; SameSite=Lax`;
-document.cookie = `revolve_ref=revolve.com; domain=.${cookieDomain}; path=/; SameSite=Lax`;
-document.cookie = `campaign_source=revolve; domain=.${cookieDomain}; path=/; SameSite=Lax`;
+document.cookie = `revolve_campaign=1; domain=${cookieDomain}; path=/; SameSite=Lax`;
+document.cookie = `revolve_ref=revolve.com; domain=${cookieDomain}; path=/; SameSite=Lax`;
+document.cookie = `campaign_source=revolve; domain=${cookieDomain}; path=/; SameSite=Lax`;
 ```
 
 Also set the `_join_inputValues` cookie with `source: "revolve"` included:
@@ -36,7 +38,7 @@ const payload = btoa(JSON.stringify({
   account_type: "1",
   source: "revolve"            // Revolve campaign name — always include for this campaign
 }));
-document.cookie = `_join_inputValues=${payload}; domain=.${cookieDomain}; path=/`;
+document.cookie = `_join_inputValues=${payload}; domain=${cookieDomain}; path=/`;
 ```
 
 > **Note**: Exact cookie names and values must be verified against the Revolve integration Jira tickets or the CF Worker configuration. Update this file if cookie names change.
