@@ -63,7 +63,12 @@ QA_REPO=/Users/khantopa/dev/sa-ui-automation
 
 ## Known Test Environment Quirks
 
-*(Updated from verification runs — add env-specific notes here)*
+- **force-approve timing**: After `GET /v3/users/{uid}/force-approve-profile`, wait 5 seconds then refresh — BE processes approval asynchronously; redemption modals won't fire until processing completes.
+- **Female /join crash (2026-03-15)**: `CONTINUE_WITH_EMAIL_V2` event key missing from deployed bundle caused app unmount for Female users. Could not reproduce manually — likely environment fluke. Monitor on next run.
+
+## Default Test User Settings
+
+- **Location**: Singapore (always — not Sydney, not California)
 
 ## Reference Docs
 

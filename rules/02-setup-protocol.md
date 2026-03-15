@@ -195,7 +195,7 @@ IF "Oops! That username is already taken":
 
 Steps:
 1. Click the location input
-2. Type a city name: **"Sydney"** (or any valid city)
+2. Type a city name: **"Singapore"** (or any valid city)
 3. Wait for autocomplete dropdown
 4. Select the first result
 5. Verify location is accepted (no error, Continue enables)
@@ -203,7 +203,7 @@ Steps:
 
 **Error: No autocomplete results**
 ```
-IF dropdown doesn't appear after typing "Sydney":
+IF dropdown doesn't appear after typing "Singapore":
   → Try "New York" or "London"
   → If still no results: screenshot + report as SETUP FAILURE (location service may be down)
 ```
