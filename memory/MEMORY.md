@@ -44,10 +44,10 @@ QA_REPO=/Users/khantopa/dev/sa-ui-automation
 
 - `khan+gdad@incube8.sg` — Generous male, existing approved member on testqa. Use for `not_eligible`, existing user scenarios. See: `memory/user_standing_accounts.md`
 
-## Selfie / Liveness Bypass (IPCF in Playwright)
+## Selfie / Liveness Bypass (IPCF)
 
-- Call `qa-callback` WHILE camera component is mounted (after clicking Continue on selfie intro), NOT before
-- `qaSimulateLiveness` URL param does NOT work on testqa — env var not set
+- Append `?qaSimulateLiveness=APPROVE` to URL at the selfie step
+- Works at any point during IPCF, not just initial /join
 - See: `memory/feedback_selfie_bypass.md`
 
 ## Scenario Isolation

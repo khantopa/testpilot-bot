@@ -1,5 +1,8 @@
 # Stage 4: Visual Verification
 
+> Before starting any setup step, load `memory/selectors.md` for known page selectors and default actions.
+> If a selector from memory works, use it. Only scan FE source if the selector fails or is missing.
+
 This stage compares the rendered UI against Figma design specs with exact CSS property values.
 
 **Figma is the source of truth for visual verification.**

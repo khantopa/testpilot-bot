@@ -13,16 +13,29 @@
   "patterns": [
     {
       "id": "campaign-cookie-enrollment",
-      "name": "Campaign Cookie Enrollment",
       "file": "patterns/campaign-cookie-enrollment.md",
-      "keywords": ["campaign", "cookie", "_join_inputValues", "landing page", "enrollment"],
-      "conditions": [
-        "registering users from a campaign landing page",
-        "modals gated on backend campaign_modal state",
-        "_join_inputValues cookie tracks campaign source"
+      "name": "Campaign Cookie Enrollment Flow",
+      "trigger_keywords": [
+        "campaign",
+        "BUC",
+        "Revolve",
+        "_join_inputValues",
+        "campaign modal",
+        "not_eligible",
+        "offer_pending_approval",
+        "boost_redemption",
+        "gold_redemption"
       ],
-      "known_instances": ["SATHREE-41277"],
-      "last_updated": "2026-03-15"
+      "trigger_conditions": [
+        "Jira labels contain 'campaign' or campaign name",
+        "Description mentions campaign cookie or _join_inputValues",
+        "Feature involves campaign-specific modals"
+      ],
+      "confidence": "HIGH",
+      "sprint_validated": "2026-03-15",
+      "times_used": 2,
+      "times_correct": 2,
+      "false_positives": 0
     }
   ]
 }

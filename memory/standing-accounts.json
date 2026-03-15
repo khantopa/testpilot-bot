@@ -1,0 +1,14 @@
+{
+  "accounts": [
+    {
+      "email": "khan+gdad@incube8.sg",
+      "type": "Generous",
+      "gender": "Man",
+      "status": "approved",
+      "environment": "testqa",
+      "purpose": "Existing approved member — use for not_eligible, existing user scenarios",
+      "otp": "000000"
+    }
+  ],
+  "_note": "Add more standing accounts as needed. These skip the full registration flow."
+}

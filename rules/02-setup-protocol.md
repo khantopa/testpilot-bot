@@ -1,5 +1,8 @@
 # Stage 3: Test Data Setup Protocol
 
+> Before starting any setup step, load `memory/selectors.md` for known page selectors and default actions.
+> If a selector from memory works, use it. Only scan FE source if the selector fails or is missing.
+
 This stage creates test users through the actual UI flow and brings them to the state required for testing.
 
 **Never create users directly via API or database.** The registration flow itself is part of what we're testing. Use the UI.
@@ -18,6 +21,24 @@ FOR EACH cookie in rules/campaigns/<campaign>.md:
 Verify cookies are set before proceeding. If cookie injection fails:
 - Note the failure in the report
 - Ask the user: "Campaign cookies could not be set. Continue without them or abort?"
+
+---
+
+## 3.0 — Check for Standing Test Accounts
+
+Before creating a new user, check if a standing account can be used:
+
+1. Read memory/standing-accounts.json
+2. Match required user type/status from test plan against available accounts
+3. If match found:
+   - Skip sections 3.1 through 3.15 entirely
+   - Go directly to 3.17 (Return to Test Environment)
+   - Log in with the standing account email + OTP 000000
+   - Note in report: "Used standing account: <email>"
+4. If no match: proceed with full registration (3.1 onward)
+
+Standing accounts are for scenarios that need an EXISTING approved user.
+New user scenarios MUST go through full registration.
 
 ---
 
@@ -118,9 +139,15 @@ IF OTP input not visible after 10 seconds:
 The test environment uses **mock OTP: 000000**
 
 Steps:
-1. Enter `000000` in the OTP field(s)
+1. Paste the full OTP "000000" into the OTP field as a single action
+   - Use clipboard paste or setValue — do NOT type digit by digit
+   - If the OTP field is split into 6 individual inputs, paste "000000"
+     into the first input — the UI should auto-distribute across fields
 2. Click Verify or Submit
 3. Verify navigation to IPCF Step 1 (Nickname)
+
+This applies to ALL OTP entry points: registration, login, email change.
+Always paste as one action, never type individual digits.
 
 **Error: OTP rejected**
 ```
@@ -185,14 +212,20 @@ IF dropdown doesn't appear after typing "Sydney":
 
 ## 3.8 — IPCF Step 3: Physical Attributes
 
+**Fast path**: Check if any valid option is already pre-selected.
+IF a value is already selected AND the test plan does NOT require a specific value for this field:
+  → Click Continue immediately — do NOT re-select or verify the value
+  → This saves 2 interactions per field (select + verify → just Continue)
+ONLY select a value if the field is empty/unselected.
+
 Height:
-1. Open height dropdown
-2. Select any valid option (e.g., first item in list)
+1. Check if a height value is already selected → if yes, skip to Weight
+2. Otherwise: open height dropdown, select any valid option (e.g., first item in list)
 3. Verify selection registers
 
 Weight:
-1. Open weight dropdown
-2. Select any valid option (e.g., first item in list)
+1. Check if a weight value is already selected → if yes, skip to Continue
+2. Otherwise: open weight dropdown, select any valid option (e.g., first item in list)
 3. Verify selection registers
 
 4. Verify Continue enables
@@ -209,16 +242,20 @@ IF dropdown is empty or spinner persists > 5 seconds:
 
 ## 3.9 — IPCF Step 4: Personal Details
 
-Fill all fields with default values:
-- **Ethnicity**: Select first available option
-- **Education**: Select first available option
-- **Relationship**: Select **"Single"** (required)
-- **Children**: Select first available option
-- **Smoking**: Select first available option
-- **Drinking**: Select first available option
+**Fast path** (applies to all fields EXCEPT Relationship):
+IF a valid option is already selected AND the test plan does NOT require a specific value:
+  → Skip interaction for that field — do NOT re-select or verify
+
+Fill fields as follows:
+- **Ethnicity**: Fast path if pre-selected; otherwise select first available option
+- **Education**: Fast path if pre-selected; otherwise select first available option
+- **Relationship**: ALWAYS select **"Single"** — do NOT use fast path (specific value required)
+- **Children**: Fast path if pre-selected; otherwise select first available option
+- **Smoking**: Fast path if pre-selected; otherwise select first available option
+- **Drinking**: Fast path if pre-selected; otherwise select first available option
 
 Steps:
-1. For each field: click → select value → verify selection registered
+1. For each field: apply fast path OR click → select value → verify selection registered
 2. After all fields filled: verify Continue enables
 3. Click Continue
 
@@ -234,10 +271,14 @@ IF relationship dropdown not found:
 
 ## 3.10 — IPCF Step 5: Tags
 
+**Fast path**: Check if at least 1 tag is already selected.
+IF 1 or more tags already selected → Click Continue immediately (minimum is met).
+ONLY click a tag if none are selected.
+
 Steps:
 1. Wait for tag options to load
-2. Click any **1** tag to select it (minimum required)
-3. Verify tag appears selected (visual state change)
+2. Check if any tag is already selected → if yes, skip to step 4
+3. Otherwise: click any **1** tag to select it (minimum required)
 4. Verify Continue enables
 5. Click Continue
 
@@ -252,10 +293,11 @@ IF tag area is blank or shows spinner > 5 seconds:
 
 ## 3.11 — IPCF Step 6: Looking For (Skippable)
 
+**Fast path**: Always check if this step can be skipped first.
+
 Steps:
-1. Check if "Skip" link is visible
-2. If visible: click Skip → proceed to Step 7
-3. If not visible (required field):
+1. Check if "Skip" link is visible → if yes, click Skip immediately (do NOT fill the field)
+2. If not visible (required field):
    - Enter placeholder text (at least 50 chars):
      `"TestPilot verification account placeholder text for looking for section."`
    - Verify character count shows ≥ 50
@@ -331,14 +373,19 @@ IF "You are missing your description." error or red border:
 
 ---
 
-## 3.14 — IPCF Step 9: Selfie Verification (Skip)
+## 3.14 — IPCF Step 9: Selfie Verification (URL Bypass)
+
+Append `?qaSimulateLiveness=APPROVE` to the current URL. The selfie step
+auto-approves without camera interaction.
 
 Steps:
-1. Look for "Skip" link
-2. If visible: click Skip → proceed
-3. If not visible (required):
-   - Note in report: "Selfie verification required — manual step needed"
-   - Ask user: "Selfie verification is required but not skippable on this test env. How should we proceed?"
+1. When selfie verification step appears, append `?qaSimulateLiveness=APPROVE`
+   to the current page URL
+2. Page reloads with liveness auto-approved
+3. Click Continue on the success screen
+4. Proceed to IPCF completion
+
+Do NOT attempt any other bypass method.
 
 ---
 
