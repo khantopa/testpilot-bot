@@ -2,7 +2,7 @@
   "_meta": {
     "description": "TestPilotBot verification pattern registry. Patterns are matched before Stage 1 to route known feature types to optimised verification protocols.",
     "last_updated": "2026-03-15",
-    "total_patterns": 0,
+    "total_patterns": 1,
     "scoring": {
       "keyword_match": 2,
       "condition_match": 3,
@@ -10,5 +10,19 @@
       "keywords_mandatory": true
     }
   },
-  "patterns": []
+  "patterns": [
+    {
+      "id": "campaign-cookie-enrollment",
+      "name": "Campaign Cookie Enrollment",
+      "file": "patterns/campaign-cookie-enrollment.md",
+      "keywords": ["campaign", "cookie", "_join_inputValues", "landing page", "enrollment"],
+      "conditions": [
+        "registering users from a campaign landing page",
+        "modals gated on backend campaign_modal state",
+        "_join_inputValues cookie tracks campaign source"
+      ],
+      "known_instances": ["SATHREE-41277"],
+      "last_updated": "2026-03-15"
+    }
+  ]
 }

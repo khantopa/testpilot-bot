@@ -1,0 +1,5 @@
+[     542ms] Unexpected identifier 'is'
+[     752ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-test13.seeking.com/join:0
+[   14112ms] [WARNING] Missing translation for id  in language en-US @ https://members-test13.seeking.com/vendors-260493500a2f816921c9.min.js?260493500a2f816921c9:2268
+[   14117ms] [WARNING] Missing translation for id  in language en-US @ https://members-test13.seeking.com/vendors-260493500a2f816921c9.min.js?260493500a2f816921c9:2268
+[   14583ms] [WARNING] Missing translation for id undefined in language en-US @ https://members-test13.seeking.com/vendors-260493500a2f816921c9.min.js?260493500a2f816921c9:2268

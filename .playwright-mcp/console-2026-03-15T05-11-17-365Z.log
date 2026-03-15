@@ -1,0 +1,5 @@
+[      52ms] [ERROR] VYSION::EVENT_TRACKING_FAILED {e: TypeError: Failed to fetch
+    at https://members-testqa.seeking.com/vendors-f1a36b0780b7adbb75c5.m…} @ https://vysion-assets-sandbox.rflxm.io/vysion-js/2.5.1/vysion.min.js:0
+[     175ms] Unexpected identifier 'is'
+[     214ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-testqa.seeking.com/join:0
+[    1138ms] Identifier 'midaEventObserver' has already been declared

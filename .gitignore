@@ -1,0 +1,11 @@
+# Environment config (contains URLs and email — never commit real values)
+.env
+
+# Test profile photo (gitignored for privacy — see rules/02-setup-protocol.md section 3.12)
+testdata/profile-photo-test.jpg
+
+# Generated verification reports (local output)
+reports/
+
+# macOS
+.DS_Store

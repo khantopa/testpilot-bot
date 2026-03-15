@@ -21,14 +21,17 @@ Runs all 8 stages of TestPilotBot:
 5. Business logic verification (AC walk-through)
 6. Responsiveness check (standard breakpoints)
 7. Verification report
-8. Feedback capture
+8. Feedback capture + knowledge growth (new feature rules if none existed)
 
 ## Required Inputs
 
 If not provided as arguments, the agent will ask:
 - Jira ticket ID
-- Figma URL
 - Test environment URL
+
+**Figma URL is auto-discovered** — the agent searches the Jira ticket description, comments,
+and linked Confluence pages for figma.com URLs. You will only be asked for a Figma URL if
+none can be found automatically.
 
 ## Output
 

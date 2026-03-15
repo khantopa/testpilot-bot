@@ -265,6 +265,10 @@ Steps:
 
 ## 3.12 — IPCF Step 7: Photo Upload
 
+> **FIRST RUN:** You need to add a real test photo to `testdata/profile-photo-test.jpg` before
+> running. Use any clean, non-offensive headshot photo that won't trigger content moderation.
+> This file is gitignored for privacy — it must be added manually to each local clone.
+
 Upload the test photo from `testdata/profile-photo-test.jpg`
 
 Steps:
@@ -340,10 +344,22 @@ Steps:
 
 ## 3.15 — Confirm IPCF Completion
 
+> IPCF completion is required for ALL test user setups — not just campaign tests.
+> No test scenario is reachable without the user having completed onboarding.
+
 After the last IPCF step, verify:
 - Redirected to dashboard, PAS queue, or profile pending page
 - URL is NOT stuck at an IPCF step
 - No error messages visible
+
+📌 CAMPAIGN USERS — check for CampaignInfoModal during IPCF:
+After the "Tell us about yourself" step (or equivalent mid-IPCF step), a campaign notice modal
+may appear for users enrolled via campaign cookie. This is a generic campaign checkpoint — not
+specific to BUC. Verify:
+- Modal appears with campaign-appropriate title and body (check rules/campaigns/<campaign>.md)
+- testid is `campaign-notice-modal` (or campaign-specific testid if overridden)
+- Dismiss modal and continue IPCF
+- If modal does NOT appear for an enrolled user → enrollment may have failed (check cookie was set before registration)
 
 Record:
 ```
@@ -360,10 +376,25 @@ Test User Created:
 
 ## 3.16 — Admin Approval
 
-Navigate to admin panel: `<TEST_ENV_URL>/login` (or known admin URL)
+Determine admin panel URL and credentials:
+```
+1. Check .env for ADMIN_URL — use if set
+2. If ADMIN_URL not set, fall back to: <TEST_ENV_URL>/admin (common convention)
+3. If neither works, ask the user: "What is the admin panel URL for <TEST_ENV>?"
+
+For admin email:
+1. Check .env for ADMIN_EMAIL — use if set
+2. If not set, ask the user: "What admin email should I use for <TEST_ENV>?"
+
+For admin password:
+→ NEVER store in .env — always ask the user or use a secure credential manager
+→ "Can you provide the admin password for <ADMIN_EMAIL> on <TEST_ENV>?"
+```
+
+Navigate to admin panel URL determined above.
 
 Admin Login:
-1. Enter admin credentials (from environment config or ask user if not known)
+1. Enter admin email (from .env or user-provided) and password (always ask)
 2. Click Login / Submit
 3. Verify admin dashboard loaded
 
@@ -385,6 +416,17 @@ Approve profile:
 3. Click Approve
 4. Verify profile status changes to "Approved"
 
+⚠️ CAMPAIGN USERS (liveness required for gift/reward redemption):
+If the test plan requires reward modals (e.g. gold_redemption_successful, boost_redemption_successful),
+simulate liveness BEFORE force-approving:
+  1. POST /v3/liveness/qa-callback?is_metadata=0
+     Body: { "uid": "<user_uid>", "recommendation": "APPROVE" }  ← uppercase, not lowercase
+  2. THEN force-approve via admin or GET /v3/users/<uid>/force-approve-profile
+
+Reason: handleFreeGiftRedemption() (or equivalent) calls canRedeemFreeGift() on EACH event.
+Approval before liveness means the liveness event fires when profile is not yet approved → skipped.
+Liveness before approval means when approval fires, both conditions are met → gift issued correctly.
+
 **Error: User not found in admin**
 ```
 IF search returns no results:
@@ -405,6 +447,12 @@ IF search returns no results:
    - User lands on dashboard (not IPCF, not pending screen)
    - Profile shows "Approved" state
    - Feature under test is accessible
+
+📌 CAMPAIGN USERS — triggering the first campaign modal after approval:
+Do NOT navigate separately to /member to trigger the modal.
+Instead: click **"View members"** on the IPCF last page after force-approve.
+The modal is dispatched on that navigation and appears naturally.
+A hard page refresh or separate navigation to /member may miss it.
 
 **Error: User still sees "Pending" screen after approval**
 ```

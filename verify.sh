@@ -6,12 +6,13 @@ set -euo pipefail
 #===============================================================================
 #
 # Usage:
-#   ./verify.sh <jira_ticket> [test_env_url] [figma_url]
+#   ./verify.sh <jira_ticket> [test_env_url]
 #
 # Examples:
 #   ./verify.sh SATHREE-41816
 #   ./verify.sh SATHREE-41816 https://members-test13.seeking.com
-#   ./verify.sh SATHREE-41816 https://members-test13.seeking.com "https://figma.com/design/..."
+#
+# Note: Figma URL is auto-discovered from the Jira ticket, comments, and linked Confluence pages.
 #
 # Prerequisites:
 #   - Claude Code CLI installed (`claude` command available)
@@ -32,19 +33,19 @@ REPORTS_DIR="${PROJECT_DIR}/reports"
 # ── Argument parsing ──────────────────────────────────────────────────────────
 JIRA_TICKET="${1:-}"
 TEST_ENV_URL="${2:-}"
-FIGMA_URL="${3:-}"
 
 if [[ -z "$JIRA_TICKET" ]]; then
     echo "╔══════════════════════════════════════════════════════════════╗"
     echo "║  TestPilotBot — Pre-Release Verification Agent              ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
     echo ""
-    echo "Usage: ./verify.sh <jira_ticket> [test_env_url] [figma_url]"
+    echo "Usage: ./verify.sh <jira_ticket> [test_env_url]"
     echo ""
     echo "Arguments:"
     echo "  jira_ticket   Jira ticket ID (required) e.g., SATHREE-41816"
     echo "  test_env_url  Test environment URL (optional — will ask if omitted)"
-    echo "  figma_url     Figma design URL (optional — will ask if omitted)"
+    echo ""
+    echo "Note: Figma URL is auto-discovered from Jira ticket, comments, and linked Confluence pages."
     echo ""
     echo "Examples:"
     echo "  ./verify.sh SATHREE-41816"
@@ -101,11 +102,6 @@ if [[ -n "$TEST_ENV_URL" ]]; then
 "
 fi
 
-if [[ -n "$FIGMA_URL" ]]; then
-    PROMPT+="- Figma URL: ${FIGMA_URL}
-"
-fi
-
 PROMPT+="
 ## Available Repositories
 "
@@ -138,7 +134,7 @@ echo ""
 echo "── Running TestPilotBot verification ──────────────────"
 echo "  Ticket: $JIRA_TICKET"
 [[ -n "$TEST_ENV_URL" ]] && echo "  Test env: $TEST_ENV_URL"
-[[ -n "$FIGMA_URL" ]] && echo "  Figma: $FIGMA_URL"
+echo "  Figma: (auto-discovered from Jira/Confluence)"
 echo "  Report will be saved to: $REPORT_FILE"
 echo ""
 

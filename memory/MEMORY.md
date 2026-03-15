@@ -19,19 +19,67 @@ QA_REPO=/Users/khantopa/dev/sa-ui-automation
 
 - Admin URL pattern: `<TEST_ENV_URL>/login` (or `/admin`)
 - OTP in test environments: `000000`
-- Test email format: `testpilot_<timestamp>@seeking-test.com`
+- Test email format (generic): `testpilot_<timestamp>@seeking-test.com`
+- Test email format (attractive): `khan+attr<id>@incube8.sg`
+- Test email format (generous): `khan+gen<id>@incube8.sg`
+- See: `memory/feedback_test_user_email_format.md`
 - Test nickname format: `testpilot_<timestamp>`
+
+## Campaign Cookie Protocol — Key Rules
+
+- Cookie field names for `_join_inputValues` must be read from FE source, NOT guessed from Confluence. See: `memory/feedback_cookie_field_names.md`
+- Modal click timing: use `browser_wait_for` + immediate `browser_evaluate` click — do NOT snapshot first. See: `memory/feedback_modal_playwright_timing.md`
+
+## Campaign Cookie Protocol
+
+- After setting `_join_inputValues` cookie, always **refresh the page** before proceeding — cookie detection is not reactive, only fires on page load
+- See: `memory/feedback_cookie_set_refresh.md`
 
 ## User Preferences
 
-*(Updated from feedback — add entries here as they accumulate)*
+- Default test environment: `https://members-testqa.seeking.com` — use automatically when no env URL provided
+- See: `memory/feedback_default_test_env.md`
+
+## Standing Test Accounts
+
+- `khan+gdad@incube8.sg` — Generous male, existing approved member on testqa. Use for `not_eligible`, existing user scenarios. See: `memory/user_standing_accounts.md`
+
+## Selfie / Liveness Bypass (IPCF in Playwright)
+
+- Call `qa-callback` WHILE camera component is mounted (after clicking Continue on selfie intro), NOT before
+- `qaSimulateLiveness` URL param does NOT work on testqa — env var not set
+- See: `memory/feedback_selfie_bypass.md`
+
+## Scenario Isolation
+
+- Clear cookies + localStorage + sessionStorage at the start of EVERY scenario (simulates incognito)
+- See: `memory/feedback_scenario_isolation.md`
+
+## SPA Navigation Rule
+
+- Use in-app buttons/links for route changes — NOT `browser_navigate`/`goto()` (resets React state)
+- Exception: after QA API calls that mutate BE state, hard navigation is acceptable
+- See: `memory/feedback_spa_navigation.md`
 
 ## Known Test Environment Quirks
 
 *(Updated from verification runs — add env-specific notes here)*
 
+## Reference Docs
+
+- QA API endpoints: `memory/reference_qa_endpoints.md` — all non-prod endpoints for test data manipulation (force-approve, delete-member, OTP, subscriptions, liveness, etc.)
+
+## Tools Available
+
+- Playwright MCP: `npx @playwright/mcp@latest` — for browser automation (Stage 3 user setup, Stage 4 visual verification)
+- See: `memory/user_playwright_mcp.md`
+
 ## Patterns Library Status
 
-- Current patterns: 0
-- Last pattern promotion: never
-- Feedback runs completed: 0
+- Current patterns: 1
+- Last pattern promotion: 2026-03-15 (`campaign-cookie-enrollment`)
+- Feedback runs completed: 1
+
+## Feature Rules Created
+
+- `rules/features/SATHREE-41277-buc-2026-campaign-modals.md` — BUC 2026 campaign modals, all 7 modals, single-scenario test flows (2026-03-15)

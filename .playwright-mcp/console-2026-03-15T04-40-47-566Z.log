@@ -1,0 +1,11 @@
+[     499ms] Unexpected identifier 'is'
+[    1256ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-test13.seeking.com/logout?redirectTo=%2Fmember?source=check-redirect-guard:0
+[    1678ms] [ERROR] VYSION::EVENT_TRACKING_FAILED {e: TypeError: Failed to fetch
+    at https://members-test13.seeking.com/vendors-260493500a2f816921c9.m…} @ https://vysion-assets-sandbox.rflxm.io/vysion-js/2.5.1/vysion.min.js:0
+[    1812ms] Unexpected identifier 'is'
+[    1831ms] [WARNING] [GSI_LOGGER]: google.accounts.id.initialize() is called multiple times. This could cause unexpected behavior and only the last initialized instance will be used. @ https://accounts.google.com/gsi/client:80
+[    1835ms] [ERROR] Not signed in with the identity provider. @ https://members-test13.seeking.com/login?redirectTo=/member?source=check-redirect-guard:0
+[    2148ms] [WARNING] [GSI_LOGGER]: google.accounts.id.initialize() is called multiple times. This could cause unexpected behavior and only the last initialized instance will be used. @ https://accounts.google.com/gsi/client:80
+[    2307ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-test13.seeking.com/login?redirectTo=/member?source=check-redirect-guard:0
+[    2350ms] [WARNING] [GSI_LOGGER]: google.accounts.id.initialize() is called multiple times. This could cause unexpected behavior and only the last initialized instance will be used. @ https://accounts.google.com/gsi/client:80
+[   10597ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://accounts.google.com/gsi/client:81

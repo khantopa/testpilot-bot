@@ -48,17 +48,20 @@ When the user runs `/verify` or asks to verify:
 1. **Stage 0 FIRST** — Read `patterns/index.json`, match the feature against known patterns
    See `rules/01-test-plan-generation.md`
 
-2. Ask for: Jira ticket ID, Figma URL, test environment URL
+2. Ask for: Jira ticket ID and test environment URL (Figma URL is auto-discovered)
 
 3. Read Jira ticket via MCP to extract acceptance criteria
 
-4. Read Figma design via MCP to extract visual specs
+4. Auto-discover Figma URL from Jira description, comments, and linked Confluence pages
+   See `rules/01-test-plan-generation.md` section 1.2a
 
-5. Generate test plan (Stage 1)
+5. Read Figma design via MCP to extract visual specs
 
-6. Execute stages 2–7 in sequence
+6. Generate test plan (Stage 1)
 
-7. **Stage 8 ALWAYS** — Run feedback capture before closing
+7. Execute stages 2–7 in sequence
+
+8. **Stage 8 ALWAYS** — Run feedback capture before closing
    See `rules/07-feedback-capture.md`
 
 ## Rule Files — Load at the Right Step
@@ -74,16 +77,28 @@ When the user runs `/verify` or asks to verify:
 | Stage 6 | `rules/05-responsiveness-check.md` |
 | Stage 7 | `rules/06-report-format.md` |
 | Stage 8 | `rules/07-feedback-capture.md` |
+| After Stage 8 (new features) | `rules/08-knowledge-growth.md` |
 | Campaign tests | `rules/campaigns/<campaign>.md` |
 
 > Load rules lazily — only when needed. Do not load all files upfront.
 
+## Knowledge Sources
+
+Business rules are loaded in priority order — highest first:
+
+1. **`rules/features/`** — TestPilotBot's own feature rules, generated from previous verification runs. Actively growing. Check here first.
+2. **`QA_REPO/.cursor/business-rules/`** — 30 legacy QA business rule files. Read-only baseline. Scan filenames and first 10 lines; load only the 2–4 most relevant files.
+3. **Jira AC + Figma + Confluence** — Primary source for new features with no existing rules.
+
+**Growth loop:** After Stage 8, if no feature rules existed for this ticket, draft a new file at `rules/features/<ticket-id>-<feature-name>.md` and present to the user for review.
+
+See `rules/08-knowledge-growth.md` for the full protocol.
+
 ## Key Inputs
 
 - **Jira ticket ID** — e.g., SATHREE-41816
-- **Figma URL** — design file URL for visual specs
+- **Figma URL** — auto-discovered from Jira/Confluence; only ask if not found
 - **Test environment URL** — e.g., https://members-test13.seeking.com
-- **Business rules path** — QA_REPO/.cursor/business-rules/02-user-registration-onboarding-workflows.md
 
 ## Pattern Library
 

@@ -1,0 +1,8 @@
+[     267ms] Unexpected identifier 'is'
+[     447ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-testqa.seeking.com/logout:0
+[    1214ms] Identifier 'midaEventObserver' has already been declared
+[    1800ms] Unexpected identifier 'is'
+[    1836ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://members-testqa.seeking.com/login?fromLogout=1:0
+[    1861ms] [ERROR] Not signed in with the identity provider. @ https://members-testqa.seeking.com/login?fromLogout=1:0
+[    1946ms] [WARNING] [GSI_LOGGER]: google.accounts.id.initialize() is called multiple times. This could cause unexpected behavior and only the last initialized instance will be used. @ https://accounts.google.com/gsi/client:80
+[    2753ms] Identifier 'midaEventObserver' has already been declared

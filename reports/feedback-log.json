@@ -2,7 +2,171 @@
   "_meta": {
     "description": "TestPilotBot feedback log. One entry per verification run. Used to grow the pattern library and improve setup protocols.",
     "created": "2026-03-15",
-    "total_runs": 0
+    "total_runs": 2
   },
-  "entries": []
+  "entries": [
+    {
+      "run_id": "20260315-SATHREE-41277",
+      "report_file": "reports/verification-report-SATHREE-41277-20260315.md",
+      "jira_ticket": "SATHREE-41277",
+      "test_env": "https://members-testqa.seeking.com",
+      "captured_at": "2026-03-15T05:50:00Z",
+      "checks": [
+        {
+          "check_name": "BillingPageBanner missing",
+          "category": "visual",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "WONT_FIX",
+          "verdict_correct": "no",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "BillingPageBanner requirement was removed from scope. Not a bug, not deferred. I incorrectly flagged as Major issue."
+        },
+        {
+          "check_name": "gold_redemption_successful modal",
+          "category": "business_logic",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "INCONCLUSIVE",
+          "verdict_correct": "partial",
+          "confidence_reported": "MEDIUM",
+          "evidence_accurate": "partial",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "Setup order was wrong — must simulate liveness FIRST, then force-approve. I did force-approve first. Environment is functional; this was a setup error. Retestable on testqa."
+        },
+        {
+          "check_name": "gold_redemption_extended modal",
+          "category": "business_logic",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "INCONCLUSIVE",
+          "verdict_correct": "yes",
+          "confidence_reported": "LOW",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "Blocked by gold_redemption_successful setup order error. Testable on testqa once correct setup order applied."
+        },
+        {
+          "check_name": "boost_redemption_successful modal",
+          "category": "business_logic",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "INCONCLUSIVE",
+          "verdict_correct": "yes",
+          "confidence_reported": "LOW",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "Liveness not completed for generous user. Testable on testqa. Same liveness-first order applies."
+        },
+        {
+          "check_name": "offer_expired modal",
+          "category": "business_logic",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "INCONCLUSIVE",
+          "verdict_correct": "yes",
+          "confidence_reported": "LOW",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "No QA mechanism to expire MembershipOffer. Confirmed by user — offer_expired is the one modal NOT testable on testqa."
+        },
+        {
+          "check_name": "profile_completed modal navigation",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "partial",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "Modal verified correctly but setup was suboptimal — refreshed /member to trigger it. Correct approach: click 'View members' on IPCF last page after force-approve. Modal appears naturally on that navigation without a separate refresh."
+        },
+        {
+          "check_name": "campaign cookie enrollment (_join_inputValues)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": true,
+          "new_pattern_trigger": "Any feature involving campaign cookie enrollment via _join_inputValues before registration",
+          "new_pattern_protocol": "1. Set _join_inputValues cookie (base64 JSON with submission_uid=crypto.randomUUID(), source=<campaign_name> if applicable) BEFORE registration. 2. Register user. 3. Complete IPCF. 4. Verify CampaignInfoModal appears during IPCF. 5. For approved+liveness modals: simulate liveness FIRST (qa-callback?is_metadata=0, recommendation='APPROVE'), then force-approve. 6. Click 'View members' on IPCF last page to see profile_completed or gold_redemption_successful. 7. Navigate to /billing/memberships to see offer_pending_approval.",
+          "notes": "Cookie payload for BUC 2026: { submission_uid: '<uuid>' } — source field is undefined/absent. Future campaigns may include source: '<campaign_name>'. submission_uid MUST be a real UUID (Str::isUuid() validated)."
+        }
+      ],
+      "setup_feedback": {
+        "setup_successful": true,
+        "brittle_steps": [
+          "liveness-then-approval order: must simulate liveness before force-approve, not after",
+          "profile_completed modal navigation: click 'View members' on IPCF last page, not page refresh"
+        ],
+        "setup_notes": "Cookie enrollment works reliably when submission_uid is a real UUID. The main trap is the liveness→approval ordering. The FE timer-based cookie detection means screenshots of not_eligible modal require fast capture or DOM snapshot instead."
+      },
+      "overall_run_feedback": "Good first BUC campaign run. Core modals verified (not_eligible, CampaignInfoModal, profile_completed, offer_pending_approval). 3 modals need re-run with corrected liveness-first order. BillingPageBanner was a false positive — requirement removed. offer_expired genuinely untestable on testqa. Cookie pattern is the key reusable asset from this run."
+    },
+    {
+      "run_id": "20260315b-SATHREE-41277",
+      "report_file": "reports/verification-report-SATHREE-41277-20260315b.md",
+      "jira_ticket": "SATHREE-41277",
+      "test_env": "https://members-testqa.seeking.com",
+      "captured_at": "2026-03-15T06:20:00Z",
+      "checks": [
+        {
+          "check_name": "not_eligible modal — appearance",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Modal appeared immediately on /member navigation for existing approved member. DOM snapshot confirmed heading 'Not eligible for this offer' and body text. Heading text differs from feature rules ('Offer Not Valid') — minor copy discrepancy, needs confirmation if intentional."
+        },
+        {
+          "check_name": "not_eligible modal — cookie cleanup on dismiss",
+          "category": "business_logic",
+          "system_verdict": "FAIL",
+          "actual_verdict": "WORKING",
+          "verdict_correct": "no",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "partial",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": true,
+          "new_pattern_trigger": "not_eligible modal cookie cleanup verification",
+          "new_pattern_protocol": "After modal appears, click the Continue or Close button explicitly via Playwright before checking cookie. The modal may auto-dismiss in Playwright before click fires — use browser_wait_for modal heading first, then click. Cookie is only removed on explicit button interaction, not on auto-dismiss.",
+          "notes": "User confirmed: cookie IS removed on manual testing. My Playwright test failed because the modal auto-dismissed before the click handler fired (ref became stale). This is a Playwright timing issue, not a real bug. Fix: use browser_wait_for modal text, then immediately click — do not snapshot first."
+        },
+        {
+          "check_name": "Join form auto-population from _join_inputValues cookie (Req.4)",
+          "category": "business_logic",
+          "system_verdict": "FAIL",
+          "actual_verdict": "WORKING",
+          "verdict_correct": "no",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "partial",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": true,
+          "new_pattern_trigger": "Campaign join flow with cookie-driven form pre-population",
+          "new_pattern_protocol": "To test form auto-population: (1) Determine exact cookie field names from FE source (resources/react-app/modules/Campaign/) — do not guess field names. (2) Set cookie with correct field names before visiting /join. (3) Navigate to /join fresh. (4) Check each step for pre-populated values — population may be step-specific, not all on step 1. (5) DOB format must match what the spinbutton expects (number, not ISO string).",
+          "notes": "User confirmed: auto-population IS implemented and works in manual testing. My simulation used guessed field names (name, gender, interested_in, email, dob). Actual field names from the BUC landing page may differ. DOB as ISO string '1999-03-15' caused spinbutton format error — FE likely expects separate day/month/year values or a different format. Must read FE source to get correct cookie field names before testing this AC."
+        }
+      ],
+      "setup_feedback": {
+        "setup_successful": false,
+        "brittle_steps": [
+          "not_eligible modal click: modal auto-dismisses in Playwright before ref can be used — need browser_wait_for + immediate click without snapshotting first",
+          "cookie field names: must read FE source for exact field names, do not assume from Confluence spec",
+          "cookie set + refresh protocol: always set cookie on a non-join page, then navigate to /join — confirmed by user"
+        ],
+        "setup_notes": "Two simulation errors this run: (1) not_eligible modal timing — modal flickers and auto-dismisses in Playwright headless mode faster than ref-based click can fire. (2) cookie field names were guessed from Confluence, not read from source — caused false FAIL on form auto-population check."
+      },
+      "overall_run_feedback": "Re-run stopped early at join form auto-population check per user instruction. Two false FAILs identified — both were simulation setup errors, not real bugs. Key learnings: read FE source for cookie field names before testing Req.4; use browser_wait_for + immediate click for modal interaction timing. not_eligible modal confirmed PASS. Form auto-population confirmed implemented by user — needs correct cookie field names from source to verify properly."
+    }
+  ]
 }

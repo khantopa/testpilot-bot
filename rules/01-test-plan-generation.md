@@ -8,15 +8,16 @@ This stage answers: **"What exactly are we testing, and how?"**
 
 ## 1.1 — Collect Inputs
 
-Before generating anything, confirm you have all three:
+Before generating anything, confirm you have at minimum:
 
 ```
 [ ] Jira ticket ID (e.g., SATHREE-41816)
-[ ] Figma URL (design file or specific frame URL)
 [ ] Test environment URL (e.g., https://members-test13.seeking.com)
 ```
 
-If any are missing, ask the user before proceeding. Do not generate a test plan with assumed inputs.
+Figma URL is **auto-discovered** from Jira and Confluence — do not ask for it upfront.
+
+If Jira ticket ID or test environment URL is missing, ask the user before proceeding. Do not generate a test plan with assumed inputs.
 
 ---
 
@@ -34,6 +35,7 @@ Extract and record:
 - **Acceptance Criteria** — every AC bullet point, numbered sequentially
 - **Labels / Components** — determine if campaign-specific (e.g., Revolve)
 - **Linked issues** — related tickets that may affect scope
+- **Linked Confluence pages** — note all remote links for Figma discovery
 - **Reporter / Assignee** — for escalation if needed
 - **Status** — confirm ticket is in "Ready for QA" or equivalent state
 
@@ -41,6 +43,51 @@ Extract and record:
 - Note exactly which AC points are unclear
 - Add them to the test plan as `INCONCLUSIVE` checks with a note to clarify with the reporter
 - Do NOT invent acceptance criteria
+
+---
+
+## 1.2a — Discover Figma URL
+
+After reading the Jira ticket, search for the Figma URL automatically. Check these sources in order:
+
+**Source 1: Jira ticket description**
+- Scan the description text for any `figma.com` URLs (design files, prototypes, or board links)
+
+**Source 2: Jira ticket comments**
+```
+mcp__claude_ai_Atlassian__fetchAtlassian(url: "<jira_api_url>/issue/<TICKET_ID>/comment")
+```
+- Scan all comment bodies for `figma.com` URLs
+
+**Source 3: Linked Confluence pages**
+```
+mcp__claude_ai_Atlassian__getJiraIssueRemoteIssueLinks(issueIdOrKey: "<TICKET_ID>")
+```
+- For each linked Confluence page, fetch it via MCP and search the body for `figma.com` URLs:
+```
+mcp__claude_ai_Atlassian__getConfluencePage(pageId: "<page_id>")
+```
+
+**URL parsing — extract fileKey and nodeId:**
+- Design file format: `https://figma.com/design/:fileKey/:fileName?node-id=:nodeId`
+- Board format: `https://figma.com/board/:fileKey/:fileName?node-id=:nodeId`
+- The nodeId uses `-` in URLs but `:` in API calls — convert `1-2` → `1:2`
+
+**Decision logic:**
+```
+IF multiple Figma URLs found:
+  → Present them to the user: "I found X Figma URLs — which one is the design spec?"
+  → Wait for user to select before proceeding to 1.3
+
+IF exactly 1 Figma URL found:
+  → Use it automatically, note where it was found
+
+IF no Figma URL found anywhere:
+  → Ask the user: "I couldn't find a Figma URL in the Jira ticket, comments, or linked
+    Confluence pages. Can you provide the Figma design URL?"
+  → If user cannot provide one: note in test plan, mark all visual checks as
+    INCONCLUSIVE — No Figma URL available
+```
 
 ---
 
@@ -74,18 +121,28 @@ Extract and record for each relevant frame:
 
 ## 1.4 — Read Business Rules
 
-Load the relevant business rules from QA_REPO:
+Use the priority-based knowledge lookup defined in `rules/08-knowledge-growth.md`:
 
-```
-/Users/khantopa/dev/sa-ui-automation/.cursor/business-rules/02-user-registration-onboarding-workflows.md
-```
+**Priority 1 — TestPilotBot feature rules** (`rules/features/`)
+- Scan for files matching this ticket ID, feature name, or related keywords
+- If found: load as primary context alongside Jira AC
 
-For non-registration features, check other relevant rule files in `.cursor/business-rules/`.
+**Priority 2 — QA business rules** (`QA_REPO/.cursor/business-rules/`)
+- Read filenames and first 10 lines of each file
+- Select 2–4 most relevant files based on the feature being tested
+- Load only those files (not the full directory)
 
-Cross-reference AC against business rules:
+**Priority 3 — Jira AC + Figma + Confluence**
+- Always authoritative for new features where no rules exist yet
+
+Cross-reference AC against loaded business rules:
 - Does the AC contradict any established business rule?
 - Are there edge cases in the business rules not covered by the AC?
 - Note any discrepancies for reporting
+
+**If no rules cover this feature:**
+- Flag to user: "No existing business rules fully cover this feature. After verification, I'll draft a new feature rules file."
+- Continue with Jira AC as sole source of truth for business logic
 
 ---
 
