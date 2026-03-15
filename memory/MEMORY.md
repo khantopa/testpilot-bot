@@ -83,3 +83,12 @@ QA_REPO=/Users/khantopa/dev/sa-ui-automation
 ## Feature Rules Created
 
 - `rules/features/SATHREE-41277-buc-2026-campaign-modals.md` — BUC 2026 campaign modals, all 7 modals, single-scenario test flows (2026-03-15)
+
+## User Pool Strategy (future optimization)
+
+For repeat verification runs on the same campaign:
+- Maintain pre-approved users per account type on testqa
+- Reset state via QA API (force-approve, delete-member, re-enroll)
+- Skip IPCF entirely when user doesn't need to test onboarding flow
+- Standing accounts in `memory/standing-accounts.json` serve this purpose
+- Add more standing accounts as they're created during runs

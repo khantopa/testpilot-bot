@@ -3,6 +3,17 @@
 > Before starting any setup step, load `memory/selectors.md` for known page selectors and default actions.
 > If a selector from memory works, use it. Only scan FE source if the selector fails or is missing.
 
+## Visual Verification is Optional
+
+This stage only runs when:
+- User explicitly requests visual verification
+- Test plan includes visual checks
+- Pattern does not have a `visual_verified_date` for this component
+
+If a component was visually verified in a previous run (check pattern known instances for `visual_verified_date`), skip CSS comparison and only run business logic checks.
+
+---
+
 This stage compares the rendered UI against Figma design specs with exact CSS property values.
 
 **Figma is the source of truth for visual verification.**
@@ -11,6 +22,17 @@ A failing visual check is a FAIL regardless of "it looks close enough" reasoning
 ---
 
 ## 4.1 — Capture Figma Specs
+
+### Batch Figma Fetching
+
+When verifying multiple components (e.g. 5+ modals), fetch ALL Figma frames at the START of Stage 4 in a single pass. Do NOT fetch mid-verification per modal.
+
+1. Collect all Figma nodeIds from the test plan
+2. Call `get_design_context` for each nodeId sequentially at Stage 4 start
+3. Cache the results in memory for use during individual component checks
+4. This prevents repeated Figma API calls during verification
+
+---
 
 For each element identified in the test plan, extract from Figma:
 

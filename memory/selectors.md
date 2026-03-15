@@ -76,6 +76,14 @@
 | Clear liveness | POST | `v3/liveness/qa-delete-all-association?is_metadata=0` |
 | Set trusted | POST | `v3/liveness/qa-set-trusted-member` |
 
+## Known Working Email Domains
+
+| Format | Use For | Notes |
+|--------|---------|-------|
+| `khan+attr<timestamp>@incube8.sg` | Attractive (Female) users | Verified working on testqa |
+| `khan+gen<timestamp>@incube8.sg` | Generous (Male) users | Verified working on testqa |
+| `testpilot_<timestamp>@seeking-test.com` | Generic users | ⚠️ Returns 400 on testqa — DO NOT USE for campaign tests |
+
 > **NOTE**: All selectors above are initial best guesses from the first verification runs.
 > After each run, update any incorrect selectors. Mark selectors as VERIFIED after confirmation.
 > Selectors marked with "FAST PATH" mean: if a value is already selected, skip interaction and click Continue.

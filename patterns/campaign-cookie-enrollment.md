@@ -129,6 +129,25 @@ If fields are invalid or absent, FE stops at that step and shows it empty. Missi
 
 When this pattern is matched, use this setup sequence:
 
+### UID Extraction (for QA API calls)
+
+```js
+// Get current user UID — available on any authenticated page
+const uid = await browser_evaluate("window.VWOObj.uuid");
+```
+
+Use this UID for all QA API calls: force-approve, liveness qa-callback, delete-member, etc. Do NOT use `GET /api/v3/me`.
+
+### force_verify_email Route Guard Workaround
+
+After registration, the FE may set a `force_verify_email` flag in localStorage that blocks modal display and redirects to email verification. To bypass this for testing:
+
+```js
+await browser_evaluate("localStorage.removeItem('force_verify_email')");
+```
+
+Run this AFTER registration completes and BEFORE navigating to check campaign modals. This is a known condition for campaign testing — the route guard is legitimate in production but blocks test verification.
+
 ### Stage 3 — Test User Setup
 
 1. Navigate to `/login` (or any non-join page on the domain)
