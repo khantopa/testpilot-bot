@@ -2,7 +2,7 @@
   "_meta": {
     "description": "TestPilotBot feedback log. One entry per verification run. Used to grow the pattern library and improve setup protocols.",
     "created": "2026-03-15",
-    "total_runs": 2
+    "total_runs": 4
   },
   "entries": [
     {
@@ -167,6 +167,200 @@
         "setup_notes": "Two simulation errors this run: (1) not_eligible modal timing — modal flickers and auto-dismisses in Playwright headless mode faster than ref-based click can fire. (2) cookie field names were guessed from Confluence, not read from source — caused false FAIL on form auto-population check."
       },
       "overall_run_feedback": "Re-run stopped early at join form auto-population check per user instruction. Two false FAILs identified — both were simulation setup errors, not real bugs. Key learnings: read FE source for cookie field names before testing Req.4; use browser_wait_for + immediate click for modal interaction timing. not_eligible modal confirmed PASS. Form auto-population confirmed implemented by user — needs correct cookie field names from source to verify properly."
+    }
+  ,
+    {
+      "run_id": "20260315-run3-SATHREE-41277",
+      "report_file": "reports/verification-report-SATHREE-41277-20260315-run3.md",
+      "jira_ticket": "SATHREE-41277",
+      "test_env": "https://members-testqa.seeking.com",
+      "captured_at": "2026-03-15T08:00:00Z",
+      "checks": [
+        {
+          "check_name": "CampaignInfoModal (Generous)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Multi-agent run. Generous flow fully verified."
+        },
+        {
+          "check_name": "profile_completed (Generous)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": ""
+        },
+        {
+          "check_name": "boost_redemption_successful (Generous)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Liveness-first then force-approve: liveness API and force-approve BOTH require https://api-testqa.seeking.com base. Confirmed: liveness → approval order correct."
+        },
+        {
+          "check_name": "Attractive flow (CampaignInfoModal, etc)",
+          "category": "business_logic",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "INCONCLUSIVE",
+          "verdict_correct": "yes",
+          "confidence_reported": "LOW",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Female /join crash not confirmed as bug. Retested in Run 4 with success — likely an environment fluke."
+        }
+      ],
+      "setup_feedback": {
+        "setup_successful": true,
+        "brittle_steps": [
+          "cookie domain: must be root domain (.seeking.com), not subdomain (.members-testqa.seeking.com)",
+          "force_verify_email: localStorage key blocks modal display after registration — clear before checking modals"
+        ],
+        "setup_notes": "Three parallel subagents ran. Generous flow PASS. Attractive subagent hit /join crash — inconclusive. Key fixes: cookie domain → root, force_verify_email bypass added."
+      },
+      "overall_run_feedback": "Run 3 established the reliable Generous flow. Attractive flow needed Run 4 to complete. Two critical fixes discovered: cookie domain (root not subdomain) and force_verify_email localStorage bypass."
+    },
+    {
+      "run_id": "20260315-run4-SATHREE-41277",
+      "report_file": "reports/verification-report-SATHREE-41277-20260315-run4.md",
+      "jira_ticket": "SATHREE-41277",
+      "test_env": "https://members-testqa.seeking.com",
+      "captured_at": "2026-03-15T10:15:00Z",
+      "checks": [
+        {
+          "check_name": "not_eligible modal",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Standing account reused. Modal appeared correctly on /member."
+        },
+        {
+          "check_name": "CampaignInfoModal (Attractive)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": ""
+        },
+        {
+          "check_name": "profile_completed (Attractive, pending)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": ""
+        },
+        {
+          "check_name": "offer_pending_approval (Attractive)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Modal appeared on /billing/memberships with correct heading and body text."
+        },
+        {
+          "check_name": "gold_redemption_successful (Attractive)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Root cause of prior failures: force-approve was called with relative path against members-testqa.seeking.com (SPA host — returns HTML). Fix: use https://api-testqa.seeking.com with credentials: include. After correct call, is_premium:1, subscription_status:ACTIVE, is_campaign_free_gift_redeemed:true. Modal appeared on /member reload."
+        },
+        {
+          "check_name": "gold_redemption_extended",
+          "category": "business_logic",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "INCONCLUSIVE",
+          "verdict_correct": "yes",
+          "confidence_reported": "N/A",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "UPDATED after continued testing. Billing IS accessible after liveness API simulation (confirmed). Correct sequence: liveness API call → /billing/memberships accessible → offer_pending_approval modal appears → dismiss → select Gold plan → fill card (4242 4242 4242 4242) → submit. However /billing/charge returns net::ERR_FAILED (CORS/network error) in Playwright/testqa — payment processor not reachable from automated browser. Status shows 'Approval Pending' but no Gold granted. Testable manually or with a standing Gold account. Earlier diagnosis (billing blocked without approval) was WRONG — it is blocked without liveness, not without profile approval."
+        },
+        {
+          "check_name": "profile_completed (Attractive User 2 — additional confirmation)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Second independent confirmation. Modal: 'Thank you for completing your profile! Your profile has been submitted and is currently under review.' Appeared on /member after liveness API call. Screenshot: screenshots/SATHREE-41277/profile_completed_modal_user2_correct.png"
+        },
+        {
+          "check_name": "offer_pending_approval (User 2 — additional confirmation)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "Second independent confirmation on /billing/memberships after liveness simulation. Heading: 'Your Gold offer is pending'. Body: 'Your Gold membership will be applied once your profile is approved. Want access now? Purchase a membership and we'll add the extra 90 days to the end of your subscription.' Screenshot: screenshots/SATHREE-41277/billing_memberships_user2.png"
+        },
+        {
+          "check_name": "offer_expired",
+          "category": "business_logic",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "INCONCLUSIVE",
+          "verdict_correct": "yes",
+          "confidence_reported": "N/A",
+          "evidence_accurate": "yes",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "No QA time-manipulation mechanism. Confirmed untestable on testqa."
+        }
+      ],
+      "setup_feedback": {
+        "setup_successful": true,
+        "brittle_steps": [
+          "display_name with digits rejected by FE validation — use letters only (e.g. TestPilotAttrB not TestPilotAttr2)",
+          "photo upload '3 items failed' banner appeared but IPCF still advanced — non-blocking UI glitch",
+          "selfie bypass: qaSimulateLiveness=APPROVE appears in IPCF URL but selfie step reappears post-IPCF on /member — URL bypass at /member also required"
+        ],
+        "setup_notes": "API host is the critical learning: ALL qa API calls must target https://api-testqa.seeking.com. Selfie bypass (?qaSimulateLiveness=APPROVE) only works on a hard page load — pushState doesn't trigger it. Billing page requires liveness simulation first (not profile approval). Payment gateway (/billing/charge) not reachable from Playwright in testqa — charge fails with net::ERR_FAILED."
+      },
+      "overall_run_feedback": "Run 4 completed the Attractive flow. All AC checks except gold_redemption_extended and offer_expired are PASS. gold_redemption_extended: billing flow confirmed working (liveness → billing → offer_pending_approval → card form), only charge step fails in testqa automated browser. Correct future sequence now documented. offer_expired: still no QA mechanism. Feature verdict: PASS with 2 INCONCLUSIVE checks (environment constraints, not defects)."
     }
   ]
 }

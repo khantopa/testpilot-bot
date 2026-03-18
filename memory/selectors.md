@@ -30,7 +30,7 @@
 | Step | Element | Selector | Default Action | Notes |
 |------|---------|----------|----------------|-------|
 | Nickname | Text input | `input[name="nickname"]` | Enter testpilot_<ts> | Must be unique |
-| Location | Autocomplete input | `input[name="location"]` or location search input | Type "Sydney", select first | Wait for dropdown |
+| Location | Autocomplete input | `input[name="location"]` or location search input | Type "Singapore", select first | Wait for dropdown. **Default is Singapore** (not Sydney) |
 | Height | Dropdown | height select/dropdown | **FAST PATH**: if any value selected → Continue | Any value works |
 | Weight | Dropdown | weight select/dropdown | **FAST PATH**: if any value selected → Continue | Any value works |
 | Ethnicity | Dropdown | ethnicity select | **FAST PATH**: if any value selected → Continue | Any value works |
@@ -68,13 +68,23 @@
 
 ## QA API Endpoints (frequently used)
 
-| Action | Method | Endpoint |
+> ⚠️ **CRITICAL**: ALL QA API calls MUST use `https://api-testqa.seeking.com` as the base URL.
+> NEVER use relative paths or `members-testqa.seeking.com` — the members subdomain is a SPA host and
+> returns `index.html` for all unknown paths. Confirmed in Run 4 (SATHREE-41277): relative-path calls
+> returned HTML (200) but had zero effect on BE state.
+>
+> Always call via `browser_evaluate` with `credentials: 'include'` to pass auth cookies:
+> ```js
+> await fetch('https://api-testqa.seeking.com/v3/users/{uid}/force-approve-profile', { credentials: 'include' })
+> ```
+
+| Action | Method | Full URL |
 |--------|--------|----------|
-| Force approve | GET | `v3/users/{uid}/force-approve-profile` |
-| Delete member | DELETE | `v3/users/{uid}` |
-| Simulate liveness | POST | `v3/liveness/qa-callback?is_metadata=0` |
-| Clear liveness | POST | `v3/liveness/qa-delete-all-association?is_metadata=0` |
-| Set trusted | POST | `v3/liveness/qa-set-trusted-member` |
+| Force approve | GET | `https://api-testqa.seeking.com/v3/users/{uid}/force-approve-profile` |
+| Delete member | DELETE | `https://api-testqa.seeking.com/v3/users/{uid}` |
+| Simulate liveness | POST | `https://api-testqa.seeking.com/v3/liveness/qa-callback?is_metadata=0` |
+| Clear liveness | POST | `https://api-testqa.seeking.com/v3/liveness/qa-delete-all-association?is_metadata=0` |
+| Set trusted | POST | `https://api-testqa.seeking.com/v3/liveness/qa-set-trusted-member` |
 
 ## Known Working Email Domains
 
