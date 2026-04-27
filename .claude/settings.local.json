@@ -22,7 +22,11 @@
       "mcp__playwright__browser_resize",
       "mcp__playwright__browser_close",
       "mcp__claude_ai_Figma__get_design_context",
-      "mcp__claude_ai_Figma__get_metadata"
+      "mcp__claude_ai_Figma__get_metadata",
+      "mcp__playwright__browser_run_code",
+      "mcp__claude_ai_Atlassian__getTransitionsForJiraIssue",
+      "mcp__claude_ai_Atlassian__addCommentToJiraIssue",
+      "mcp__claude_ai_Atlassian__transitionJiraIssue"
     ]
   }
 }

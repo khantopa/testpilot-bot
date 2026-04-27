@@ -1,8 +1,8 @@
 {
   "_meta": {
     "description": "TestPilotBot verification pattern registry. Patterns are matched before Stage 1 to route known feature types to optimised verification protocols.",
-    "last_updated": "2026-03-15",
-    "total_patterns": 1,
+    "last_updated": "2026-03-26",
+    "total_patterns": 2,
     "scoring": {
       "keyword_match": 2,
       "condition_match": 3,
@@ -35,6 +35,30 @@
       "sprint_validated": "2026-03-15",
       "times_used": 3,
       "times_correct": 3,
+      "false_positives": 0
+    },
+    {
+      "id": "web-force-update-verification",
+      "file": "patterns/web-force-update-verification.md",
+      "name": "Web Force Update Verification",
+      "trigger_keywords": [
+        "web_force_update",
+        "forceVersionUpdate",
+        "force page refresh",
+        "force page reload",
+        "force version update",
+        "WEB-TIMESTAMP",
+        "WEB_TIMESTAMP"
+      ],
+      "trigger_conditions": [
+        "Feature modifies pages/routes to call forceVersionUpdate()",
+        "Feature changes the WEB-TIMESTAMP header or version comparison logic",
+        "Feature extends the existing force-update mechanism to new pages/entry points"
+      ],
+      "confidence": "HIGH",
+      "sprint_validated": "2026-03-26",
+      "times_used": 1,
+      "times_correct": 1,
       "false_positives": 0
     }
   ]

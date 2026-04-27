@@ -3,6 +3,7 @@
 ## Trigger
 
 **Keywords** (must appear in feature name, ticket, or description):
+
 - campaign
 - cookie
 - `_join_inputValues`
@@ -10,6 +11,7 @@
 - enrollment
 
 **Conditions** (any of these):
+
 - Feature involves registering new users from a campaign landing page
 - Feature has modals gated on backend `campaign_modal` state
 - Feature uses `_join_inputValues` cookie to track campaign source
@@ -23,9 +25,11 @@
 ### Minimal (enrollment only — no form pre-population)
 
 ```js
-const payload = btoa(JSON.stringify({
-  submission_uid: crypto.randomUUID()  // MUST be real UUID — Str::isUuid() validated in BE
-}));
+const payload = btoa(
+  JSON.stringify({
+    submission_uid: crypto.randomUUID(), // MUST be real UUID — Str::isUuid() validated in BE
+  }),
+);
 document.cookie = `_join_inputValues=${payload}; domain=.seeking.com; path=/`;
 ```
 
@@ -34,30 +38,36 @@ Use this for testing modals and enrollment logic where form pre-population is no
 ### Full (enrollment + join form auto-population — Req.4 / AC: form pre-fill from cookie)
 
 **Default: Generous (Male) User**
+
 ```js
-const payload = btoa(JSON.stringify({
-  submission_uid: crypto.randomUUID(),   // MUST be real UUID
-  sex: "3",                              // Male
-  gender_preference: ["248"],            // Female preference ID
-  email: `khan+gen${Date.now()}@incube8.sg`,
-  dob: 631152000,                        // Unix timestamp (seconds)
-  account_type: "1",
-  source: undefined                      // BUC 2026 — no source. Future: "revolve", etc.
-}));
+const payload = btoa(
+  JSON.stringify({
+    submission_uid: crypto.randomUUID(), // MUST be real UUID
+    sex: '3', // Male
+    gender_preference: ['248'], // Female preference ID
+    email: `khan+gen${Date.now()}@incube8.sg`,
+    dob: 631152000, // Unix timestamp (seconds)
+    account_type: '1',
+    source: undefined, // BUC 2026 — no source. Future: "revolve", etc.
+  }),
+);
 document.cookie = `_join_inputValues=${payload}; domain=.seeking.com; path=/`;
 ```
 
 **Default: Attractive (Female) User**
+
 ```js
-const payload = btoa(JSON.stringify({
-  submission_uid: crypto.randomUUID(),   // MUST be real UUID
-  sex: "4",                              // Female
-  gender_preference: ["247"],            // Male preference ID
-  email: `khan+attr${Date.now()}@incube8.sg`,
-  dob: 631152000,                        // Unix timestamp (seconds)
-  account_type: "2",
-  source: undefined                      // BUC 2026 — no source. Future: "revolve", etc.
-}));
+const payload = btoa(
+  JSON.stringify({
+    submission_uid: crypto.randomUUID(), // MUST be real UUID
+    sex: '4', // Female
+    gender_preference: ['247'], // Male preference ID
+    email: `khan+attr${Date.now()}@incube8.sg`,
+    dob: 631152000, // Unix timestamp (seconds)
+    account_type: '2',
+    source: undefined, // BUC 2026 — no source. Future: "revolve", etc.
+  }),
+);
 document.cookie = `_join_inputValues=${payload}; domain=.seeking.com; path=/`;
 ```
 
@@ -65,18 +75,19 @@ document.cookie = `_join_inputValues=${payload}; domain=.seeking.com; path=/`;
 
 ### Field Reference (from FE source — DO NOT GUESS)
 
-| Field | Type | Valid Values | Notes |
-|-------|------|-------------|-------|
-| `submission_uid` | string | Any UUID | BE-validated, required for enrollment |
-| `sex` | string | `"3"` (Male), `"4"` (Female) | API attribute ID — NOT "male"/"female" |
-| `gender_preference` | string[] or string | API preference IDs or `"999"` (Everyone) | Array preferred; legacy comma-string also accepted |
-| `email` | string | RFC email format | Regex-validated |
-| `dob` | number or string | Unix timestamp (seconds) OR `"MM/DD/YYYY"` / `"DD/MM/YYYY"` | Format auto-detected by IP country. Unix timestamp is safest. |
-| `bdayDay` | string | `"1"`–`"31"` | Fallback if `dob` absent |
-| `bdayMonth` | string | `"1"`–`"12"` | Fallback if `dob` absent |
-| `bdayYear` | string | 4-digit year | Fallback if `dob` absent |
-| `account_type` | string | `"1"`, `"2"` | Auto-derived from `sex` if omitted |
-| `source` | string or undefined | Campaign name e.g. `"revolve"` | Absent for BUC 2026. Future campaigns should include campaign name. |
+| Field               | Type                | Valid Values                                                | Notes                                                               |
+| ------------------- | ------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| `submission_uid`    | string              | Any UUID                                                    | BE-validated, required for enrollment                               |
+| `sex`               | string              | `"3"` (Male), `"4"` (Female)                                | API attribute ID — NOT "male"/"female"                              |
+| `gender_preference` | string[] or string  | API preference IDs or `"999"` (Everyone)                    | Array preferred; legacy comma-string also accepted                  |
+| `hashed_email`      | string              | Base64url-encoded AES-GCM encrypted email                   | Required for enrollment                                             |
+| `email`             | string              | RFC email format                                            | Regex-validated                                                     |
+| `dob`               | number or string    | Unix timestamp (seconds) OR `"MM/DD/YYYY"` / `"DD/MM/YYYY"` | Format auto-detected by IP country. Unix timestamp is safest.       |
+| `bdayDay`           | string              | `"1"`–`"31"`                                                | Fallback if `dob` absent                                            |
+| `bdayMonth`         | string              | `"1"`–`"12"`                                                | Fallback if `dob` absent                                            |
+| `bdayYear`          | string              | 4-digit year                                                | Fallback if `dob` absent                                            |
+| `account_type`      | string              | `"1"`, `"2"`                                                | Auto-derived from `sex` if omitted                                  |
+| `campaign`          | string or undefined | Campaign name e.g. `"revolve_festival_2026"`                | Absent for BUC 2026. Future campaigns should include campaign name. |
 
 **BUC 2026**: Only `submission_uid` is required for enrollment. Other fields enable form pre-population per Req.4.
 
@@ -115,6 +126,7 @@ Cookie is **removed by FE** after successful parsing on Join page load (`removeC
 **Source**: `FE_REPO/resources/react-app/components/auth/Join.tsx` lines 304–344
 
 When cookie is present on `/join` load:
+
 - Step 1 (gender/interest): pre-selected if `sex` + `gender_preference` valid → **FE skips to Step 2**
 - Step 2 (DOB): pre-filled if `dob` or `bdayDay/Month/Year` valid → **FE skips to Step 3**
 - Step 3 (email): pre-filled if `email` valid
@@ -133,7 +145,7 @@ When this pattern is matched, use this setup sequence:
 
 ```js
 // Get current user UID — available on any authenticated page
-const uid = await browser_evaluate("window.VWOObj.uuid");
+const uid = await browser_evaluate('window.VWOObj.uuid');
 ```
 
 Use this UID for all QA API calls: force-approve, liveness qa-callback, delete-member, etc. Do NOT use `GET /api/v3/me`.
@@ -167,30 +179,30 @@ Run this AFTER registration completes and BEFORE navigating to check campaign mo
 
 ### Stage 5 — Business Logic Verification
 
-| Modal | User Type | Precondition | Trigger |
-|-------|-----------|--------------|---------|
-| `not_eligible` | Any existing member | Logged in | Set cookie (minimal), navigate to `/member` |
-| `CampaignInfoModal` | New BUC-enrolled user | Cookie set before registration | Appears during IPCF automatically |
-| `profile_completed` | Any enrolled user | IPCF complete, **pending approval** | Click "View members" on IPCF last page |
-| `gold_redemption_successful` | Attractive, enrolled | Liveness first → then approve | Click "View members" after force-approve |
-| `gold_redemption_extended` | Attractive, enrolled | Has Gold already, then liveness+approve | Click "View members" |
-| `boost_redemption_successful` | Generous, enrolled | Liveness first → then approve | Click "View members" |
-| `offer_pending_approval` | Attractive, enrolled | Liveness+approved, no gold yet | Navigate to `/billing/memberships` |
-| `offer_expired` | Any enrolled | Expired offer | ⚠️ No QA endpoint — not testable on testqa |
+| Modal                         | User Type             | Precondition                            | Trigger                                     |
+| ----------------------------- | --------------------- | --------------------------------------- | ------------------------------------------- |
+| `not_eligible`                | Any existing member   | Logged in                               | Set cookie (minimal), navigate to `/member` |
+| `CampaignInfoModal`           | New BUC-enrolled user | Cookie set before registration          | Appears during IPCF automatically           |
+| `profile_completed`           | Any enrolled user     | IPCF complete, **pending approval**     | Click "View members" on IPCF last page      |
+| `gold_redemption_successful`  | Attractive, enrolled  | Liveness first → then approve           | Click "View members" after force-approve    |
+| `gold_redemption_extended`    | Attractive, enrolled  | Has Gold already, then liveness+approve | Click "View members"                        |
+| `boost_redemption_successful` | Generous, enrolled    | Liveness first → then approve           | Click "View members"                        |
+| `offer_pending_approval`      | Attractive, enrolled  | Liveness+approved, no gold yet          | Navigate to `/billing/memberships`          |
+| `offer_expired`               | Any enrolled          | Expired offer                           | ⚠️ No QA endpoint — not testable on testqa  |
 
 ---
 
 ## Termination Conditions
 
-| If | Then |
-|----|------|
-| `CampaignInfoModal` does NOT appear during IPCF | FAIL — enrollment failed; check cookie was set before `/join` and `submission_uid` is a valid UUID |
-| Join form opens at Step 3 (email) with fields pre-filled | PASS — Req.4 auto-population working |
-| Join form opens at Step 1 with empty fields despite full cookie | FAIL — Req.4 not working; check field names against FE source |
-| Modal appears on correct route with correct title/body | PASS |
-| Modal appears on wrong route (e.g. `offer_pending_approval` on `/member`) | FAIL — route restriction broken |
-| Subscription/boost system unresponsive on testqa | INCONCLUSIVE — note environment limitation |
-| `offer_expired` modal cannot be triggered | INCONCLUSIVE — no QA mechanism |
+| If                                                                        | Then                                                                                               |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `CampaignInfoModal` does NOT appear during IPCF                           | FAIL — enrollment failed; check cookie was set before `/join` and `submission_uid` is a valid UUID |
+| Join form opens at Step 3 (email) with fields pre-filled                  | PASS — Req.4 auto-population working                                                               |
+| Join form opens at Step 1 with empty fields despite full cookie           | FAIL — Req.4 not working; check field names against FE source                                      |
+| Modal appears on correct route with correct title/body                    | PASS                                                                                               |
+| Modal appears on wrong route (e.g. `offer_pending_approval` on `/member`) | FAIL — route restriction broken                                                                    |
+| Subscription/boost system unresponsive on testqa                          | INCONCLUSIVE — note environment limitation                                                         |
+| `offer_expired` modal cannot be triggered                                 | INCONCLUSIVE — no QA mechanism                                                                     |
 
 ---
 
@@ -208,9 +220,9 @@ Run this AFTER registration completes and BEFORE navigating to check campaign mo
 
 ## Known Instances
 
-| Date | Ticket | Outcome | Notes |
-|------|--------|---------|-------|
-| 2026-03-15 | SATHREE-41277 | PARTIAL | BUC 2026 first run. 4/7 modals verified. 3 blocked by wrong liveness order. offer_expired untestable on testqa. |
-| 2026-03-15 | SATHREE-41277 | PARTIAL | Re-run. not_eligible PASS. Form auto-population stopped early — cookie field names were wrong (guessed vs source). Correct field names now documented above. |
-| 2026-03-15 | SATHREE-41277 | PARTIAL | Multi-agent run (3 subagents). Generous flow: CampaignInfoModal + profile_completed + boost_redemption_successful all PASS. Attractive flow: INCONCLUSIVE — Female /join crash (unconfirmed environment fluke, not raised as bug). 2 agent errors corrected: cookie domain was subdomain not root (now fixed in CLAUDE.md), force_verify_email timing needed 5s wait + refresh (now in this pattern). Feature confirmed working in production. |
+| Date       | Ticket        | Outcome             | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | ------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-15 | SATHREE-41277 | PARTIAL             | BUC 2026 first run. 4/7 modals verified. 3 blocked by wrong liveness order. offer_expired untestable on testqa.                                                                                                                                                                                                                                                                                                                                                                                                        |
+| 2026-03-15 | SATHREE-41277 | PARTIAL             | Re-run. not_eligible PASS. Form auto-population stopped early — cookie field names were wrong (guessed vs source). Correct field names now documented above.                                                                                                                                                                                                                                                                                                                                                           |
+| 2026-03-15 | SATHREE-41277 | PARTIAL             | Multi-agent run (3 subagents). Generous flow: CampaignInfoModal + profile_completed + boost_redemption_successful all PASS. Attractive flow: INCONCLUSIVE — Female /join crash (unconfirmed environment fluke, not raised as bug). 2 agent errors corrected: cookie domain was subdomain not root (now fixed in CLAUDE.md), force_verify_email timing needed 5s wait + refresh (now in this pattern). Feature confirmed working in production.                                                                         |
 | 2026-03-15 | SATHREE-41277 | PASS (7/9 testable) | Run 4. Attractive flow complete: not_eligible + CampaignInfoModal + profile_completed + offer_pending_approval + gold_redemption_successful all PASS. Key fix: force-approve/liveness APIs must use `https://api-testqa.seeking.com` base (not relative path — returns SPA HTML). gold_redemption_extended + offer_expired INCONCLUSIVE — environment limitation confirmed: can't pre-grant Gold without approval, can't approve without liveness, liveness+approval fires gold_redemption_successful (no prior Gold). |

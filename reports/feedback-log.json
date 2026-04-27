@@ -2,7 +2,7 @@
   "_meta": {
     "description": "TestPilotBot feedback log. One entry per verification run. Used to grow the pattern library and improve setup protocols.",
     "created": "2026-03-15",
-    "total_runs": 4
+    "total_runs": 5
   },
   "entries": [
     {
@@ -361,6 +361,115 @@
         "setup_notes": "API host is the critical learning: ALL qa API calls must target https://api-testqa.seeking.com. Selfie bypass (?qaSimulateLiveness=APPROVE) only works on a hard page load — pushState doesn't trigger it. Billing page requires liveness simulation first (not profile approval). Payment gateway (/billing/charge) not reachable from Playwright in testqa — charge fails with net::ERR_FAILED."
       },
       "overall_run_feedback": "Run 4 completed the Attractive flow. All AC checks except gold_redemption_extended and offer_expired are PASS. gold_redemption_extended: billing flow confirmed working (liveness → billing → offer_pending_approval → card form), only charge step fails in testqa automated browser. Correct future sequence now documented. offer_expired: still no QA mechanism. Feature verdict: PASS with 2 INCONCLUSIVE checks (environment constraints, not defects)."
+    },
+    {
+      "run_id": "20260325-SATHREE-41816",
+      "report_file": "reports/verification-report-SATHREE-41816-20260325.md",
+      "jira_ticket": "SATHREE-41816",
+      "test_env": "https://members-testqa.seeking.com",
+      "captured_at": "2026-03-25T17:30:00+08:00",
+      "checks": [
+        {
+          "check_name": "AC-19: BUC Regression",
+          "category": "regression",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "PASS",
+          "verdict_correct": "no",
+          "confidence_reported": "MEDIUM",
+          "evidence_accurate": "partial",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "User feedback: could have been verified via response interception — set profile_campaign to breakup_campaign_2026 and verify BUC modals render. Same technique used for Revolve modals. Verdict should have been PASS."
+        },
+        {
+          "check_name": "Infrastructure — Enrollment E2E",
+          "category": "business_logic",
+          "system_verdict": "INCONCLUSIVE",
+          "actual_verdict": "PASS",
+          "verdict_correct": "no",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "partial",
+          "pattern_used": "campaign-cookie-enrollment",
+          "new_pattern_candidate": false,
+          "notes": "User feedback: encryption key and encrypt/decrypt functions were shared earlier in the session. Should have used them to create a real hashed_email for the cookie, enabling full E2E enrollment without CF Worker. Over-relied on response interception when real E2E was possible."
+        }
+      ],
+      "setup_feedback": {
+        "setup_successful": true,
+        "brittle_steps": [
+          "VWOObj.uuid was undefined — had to extract UID from network requests. Should exist but didn't.",
+          "qaSimulateLiveness=APPROVE URL param: should be added at /member redirect during username step, not at selfie step",
+          "Photo upload: should select all 3 photos in one action, not one by one",
+          "Over-reliance on response interception: should use factory API + real encryption when keys are available"
+        ],
+        "setup_notes": "User provided encryption key and functions to create real hashed_email. These should have been used for E2E enrollment instead of falling back to response interception. Response interception hides BE bugs — only use when explicitly instructed. Selfie bypass timing improved: add URL param early at username step."
+      },
+      "overall_run_feedback": "30/32 checks PASS, 2 INCONCLUSIVE — but user confirmed both INCONCLUSIVE checks were testable with correct approach (response interception for BUC regression, real encryption for enrollment). Effective run overall but over-relied on response interception when real E2E paths existed. Key learnings: factory API > interception, encryption keys when provided must be used, selfie bypass timing, batch photo upload."
+    },
+    {
+      "run_id": "20260326-SATHREE-41764",
+      "report_file": "reports/verification-report-SATHREE-41764-20260326.md",
+      "jira_ticket": "SATHREE-41764",
+      "test_env": "https://members-testqa.seeking.com",
+      "captured_at": "2026-03-26T09:10:00+08:00",
+      "checks": [
+        {
+          "check_name": "Login page reload on web_force_update: true",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": true,
+          "new_pattern_trigger": "Feature involves web_force_update, forceVersionUpdate, or force page refresh/reload mechanism",
+          "new_pattern_protocol": "1. Intercept profile-attributes response, inject metadata.web_force_update: true into first response only. 2. Navigate to target page. 3. Verify page reloads (detect via load event or console GTM-INIT cycles). 4. Verify page settles after reload (no infinite loop).",
+          "notes": "Injected web_force_update: true into profile-attributes response body. Page reloaded as expected."
+        },
+        {
+          "check_name": "Join page reload on web_force_update: true",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "Same approach as Login. Join page useEffect fires on mount, calls forceVersionUpdate() which reads store directly."
+        },
+        {
+          "check_name": "No infinite reload loop",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "Only first request intercepted (interceptCount: 1). After reload, normal response returned. toggleForceVersionUpdate() resets flag to false before reload, preventing re-trigger."
+        },
+        {
+          "check_name": "Natural BE trigger (old WEB-TIMESTAMP header)",
+          "category": "business_logic",
+          "system_verdict": "PASS",
+          "actual_verdict": "PASS",
+          "verdict_correct": "yes",
+          "confidence_reported": "HIGH",
+          "evidence_accurate": "yes",
+          "pattern_used": null,
+          "new_pattern_candidate": false,
+          "notes": "Modified outgoing WEB-TIMESTAMP header to 1700000000. BE returned metadata.web_force_update: true in profile-attributes response. Confirms timestamp comparison mechanism works."
+        }
+      ],
+      "setup_feedback": {
+        "setup_successful": true,
+        "brittle_steps": [],
+        "setup_notes": "No test user setup needed. Pure API response interception. Clean and efficient run. Natural timestamp trigger also confirmed as alternative approach."
+      },
+      "overall_run_feedback": "Clean 4/4 PASS run. Efficient verification via response interception — no user creation needed. Natural BE trigger (old WEB-TIMESTAMP) confirmed working. Pattern candidate identified for web_force_update verification."
     }
   ]
 }

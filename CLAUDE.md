@@ -131,12 +131,13 @@ See `rules/08-knowledge-growth.md` for the full protocol.
 
 ## Pattern Library
 
-Current patterns: **1**
-Last updated: 2026-03-15
+Current patterns: **2**
+Last updated: 2026-03-26
 
 | Pattern | Trigger | Validated |
 |---------|---------|-----------|
 | Campaign Cookie Enrollment | campaign, BUC, `_join_inputValues`, campaign modal | 2026-03-15 |
+| Web Force Update Verification | `web_force_update`, `forceVersionUpdate`, force page reload | 2026-03-26 |
 
 Full registry: `patterns/index.json`
 

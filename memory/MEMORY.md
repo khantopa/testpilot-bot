@@ -79,11 +79,23 @@ QA_REPO=/Users/khantopa/dev/sa-ui-automation
 - Playwright MCP: `npx @playwright/mcp@latest` — for browser automation (Stage 3 user setup, Stage 4 visual verification)
 - See: `memory/user_playwright_mcp.md`
 
+## Factory vs Response Interception
+
+- Always prefer real E2E via factory API over Playwright response interception — interception hides BE bugs
+- Only use interception when user explicitly approves it
+- When user provides encryption keys/functions, USE them for real enrollment
+- See: `memory/feedback_factory_over_interception.md`
+
+## Photo Upload
+
+- Select all 3 photos in a single file upload action, not one by one
+- See: `memory/feedback_photo_upload_batch.md`
+
 ## Patterns Library Status
 
 - Current patterns: 1
 - Last pattern promotion: 2026-03-15 (`campaign-cookie-enrollment`)
-- Feedback runs completed: 1
+- Feedback runs completed: 5
 
 ## Feature Rules Created
 
